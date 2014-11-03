@@ -1,4 +1,4 @@
 #/usr/bin/env ruby
 
-// from: https://github.com/elasticsearch/elasticsearch-ruby
+# http://www.rubydoc.info/gems/elasticsearch-api/
 require "elasticsearch"
