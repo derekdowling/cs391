@@ -1,0 +1,6 @@
+{
+    "amt":"float",
+    "source_id": "string",
+    "destination_id": "string",
+    "time": "int"
+}
