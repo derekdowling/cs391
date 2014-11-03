@@ -5,7 +5,12 @@ Tools for our big data Elastic Search project
 
 ##### Getting Started
 
-run: "bundle install"
+Install dependencies:
+bundle install
+
+To run scripts:
+
+ruby YOUR_FILE_NAME.rb
 
 BOOM DONE.
 
