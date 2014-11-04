@@ -1,5 +1,6 @@
 #/usr/bin/env ruby
 
-require "generator.rb"
+require_relative "generator"
 
-generate()
+# Testing with a value of 10
+generate(10)

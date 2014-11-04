@@ -33,16 +33,21 @@ def createJson(buffer, manifest, count)
     i = 0
     while i < count
 
-        puts "Generating " << i + 1 << " of " << count
+        #puts "Generating " << i + 1 << " of " << count
+        puts "Generating #{i+1} of #{count}"
 
         #generate data, this is a place holder below
         json_obj = ''
 
         #generate random inputs based on keys/values(types) provided from
         #manifest
-
+        json_obj = manifest.clone
+        json_obj.each {|key, val| json_obj[key] = getRandom(val)}
+    
         #output data to specified buffer
         buffer.puts JSON.pretty_generate(json_obj)
+
+        i = i + 1
     end
 
     # finally close our buffer
@@ -50,3 +55,26 @@ def createJson(buffer, manifest, count)
     buffer.close()
     puts "Goodbye!"
 end 
+
+# Given the type of data needed, generates random data
+# I used random number for the max vals, feel free to change
+def getRandom(value_type)
+    my_prng = Random.new(seed = Random.new_seed)
+    if value_type == 'float'
+        # Takes any float between 0 and 10,000.00...
+        # Rounds to 2 decimal places
+        return my_prng.rand(10000.0).round(2)
+    elsif value_type == 'int'
+        # Int between 0 and 100,000
+        return my_prng.rand(100000)
+    elsif value_type == 'string'
+        # String of 20 random letters
+        return ('a'..'z').to_a.shuffle[0,20].join
+    else
+        return 0
+    end
+end
+
+
+
+
