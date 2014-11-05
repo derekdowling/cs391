@@ -1,3 +1,5 @@
+require 'rubygems'
+require 'bundler/setup'
 require "elasticsearch"
 
 class Loader
@@ -19,6 +21,7 @@ class Loader
     def upload(client, json)
         client.bulk body: [
                 { index:  { _index: 'myindex', _type: 'mytype', _id: 1, data: { title: 'foo' } } },
+		{ index:  { _index: 'myindex', _type: 'mytype', _id: 2, data: { title: 'foo' } } }
         ]
     end
 
