@@ -62,3 +62,5 @@ Create 5 documents and use a loader:
 ruby create_data.rb gen --driver gen 5
 ```
 ----------------------------------------------------------------------------
+##### Profiling Queries
+COMING SOON.
