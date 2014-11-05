@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+echo "Installing dependencies"
+bundle install
+echo "Installing server dependencies"
+bundle install
+berks install
+echo "Starting server"
+cd ../esruby/.kitchen/kitchen-vagrant/default-ubuntu-1404
+vagrant up
+cd ../../../
+echo "Provisioning server"
+kitchen converge
+echo "ES up and running"
