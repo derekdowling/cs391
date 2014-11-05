@@ -35,8 +35,7 @@ git push origin YOUR_BRANCH_NAME
 Go here: https://github.com/derekdowling/cs391/pulls
 Click "New pull request"
 Set "base" to master set "compare" to your branch name
-Go to our facebook chat, post the resulting pull request link and let someone
-else review/merge it.
+Go to our facebook chat, post the resulting pull request link and let someone else review/merge it.
 ----------------------------------------------------------------------------
 ##### Running the cli
 
