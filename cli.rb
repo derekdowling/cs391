@@ -22,6 +22,7 @@ class CLI < Thor
     # CLI Commands
     desc "gen", "Generate n documents from json manifest and optionally load into ES"
     desc "query", "-- NOT YET IMPLEMENTED -- use to run elastic search queries through"
+    desc "ping", "Tests our elastic search connection"
 
     long_desc <<-LONGDESC
     clo:
@@ -73,24 +74,39 @@ class CLI < Thor
         end
     end
 
-    # captures and sets up profiling metrics
-    def start_profiler
-        puts "Starting at " << Time.now
-        @start_time = Time.now
+    def ping()
+        loader = Loader.new
+        loader.testConnection()
     end
 
-    # stops profiling metrics and prints to STDOUT
-    # context allows you to pass in some arbitrary statistics to output, we
-    # may want to look into a profiling gem that can probably do this way better
-    # out of the box
-    def stop_and_stat(context)
-        # stop metrics and calculate
-        @end_time = Time.now
-        @elapsed = (@end_time - @start_time) * 1000.0
+    ########################
+    # Helper Functions Below
+    ########################
 
-        # output results
-        puts "Finised at " << @end_time
-        puts "Took " << @elapsed << " seconds to " << context
+    # this makes thor not complain about these helpers
+    no_commands do 
+
+        # captures and sets up profiling metrics
+        def start_profiler
+            puts "Starting at " << Time.now
+            @start_time = Time.now
+        end
+
+        # stops profiling metrics and prints to STDOUT
+        # context allows you to pass in some arbitrary statistics to output, we
+        # may want to look into a profiling gem that can probably do this way better
+        # out of the box
+        def stop_and_stat(context)
+            # stop metrics and calculate
+            @end_time = Time.now
+            @elapsed = (@end_time - @start_time) * 1000.0
+
+            # output results
+            puts "Finised at " << @end_time
+            puts "Took " << @elapsed << " seconds to " << context
+        end
+
+    # end of no_commands
     end
 end
 

@@ -1,6 +1,32 @@
 {
-    "amt":"float",
-    "source_id": "string",
-    "destination_id": "string",
-    "time": "int"
+    "blocks": {
+        "array" {
+            "block_id": "string",
+            "amount": "float"
+        }
+    },
+    "input_amount": "float",
+    "output_amount": "float",
+    "fees": "float,
+    "american": "float",
+    "source": {
+        "address": "string",
+        "hash_160": "string"
+    },
+    "destination": {
+        "address": "string",
+        "hash_160": "string"
+    },
+    "received_time": "time",
+    "confirmation_time": "time",
+    "confirmation_count": "int",
+    "size_b": "int",
+    "relay_ip": "string",
+    "input_scripts": {
+        "array": "string"
+    },
+    "output_scripts": {
+        "array": "string"
+    },
+    "user_id": "string"
 }

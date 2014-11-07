@@ -16,6 +16,7 @@ GEM
     i18n (0.6.11)
     multi_json (1.10.1)
     multipart-post (2.0.0)
+    thor (0.19.1)
 
 PLATFORMS
   ruby
@@ -24,3 +25,4 @@ DEPENDENCIES
   elasticsearch
   faker
   i18n
+  thor

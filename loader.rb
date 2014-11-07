@@ -16,6 +16,11 @@ class Loader
         return client
     end
 
+    def testConnection()
+        client = connect()
+        puts client.cluster.health
+    end
+
     def upload(client, json)
         client.bulk body: [
                 { index:  { _index: 'myindex', _type: 'mytype', _id: 1, data: { title: 'foo' } } },
