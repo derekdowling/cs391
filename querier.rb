@@ -22,3 +22,4 @@ class querier
 	def close()
 	    # close off connection to Elasticsearch here
 	end
+end
