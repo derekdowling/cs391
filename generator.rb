@@ -1,5 +1,6 @@
 require 'json'
-
+require 'rubygems'
+require 'faker'
 
 class Generator
 
@@ -24,7 +25,7 @@ class Generator
         # load manifest from file
         key_values = parseManifest()
         # start generating json objects
-        createJson(output, key_values, documents)
+        createJson(@driver, key_values, documents)
     end
 
     # Loads the manifest file, parses it to Json, returns the hash
@@ -69,21 +70,49 @@ class Generator
     end 
 
     # Given the type of data needed, generates random data
-    # I used random number for the max vals, feel free to change
+    # Generates: float, int, string, address, name, city
     def getRandom(value_type)
-        my_prng = Random.new(seed = Random.new_seed)
-        if value_type == 'float'
-            # Takes any float between 0 and 10,000.00...
-            # Rounds to 2 decimal places
-            return my_prng.rand(10000.0).round(2)
-        elsif value_type == 'int'
-            # Int between 0 and 100,000
-            return my_prng.rand(100000)
-        elsif value_type == 'string'
-            # String of 20 random letters
-            return ('a'..'z').to_a.shuffle[0,20].join
-        else
-            return 0
+        catch (:wrong_type) do
+            my_prng = Random.new(seed = Random.new_seed)
+            if value_type == 'float'
+                # Takes any float between 0 and 10,000.00...
+                # Rounds to 2 decimal places
+                return my_prng.rand(10000.0).round(2)
+            elsif value_type == 'int'
+                # Int between 0 and 100,000
+                return my_prng.rand(100000)
+            elsif value_type == 'string'
+                # String of 20 random letters
+                return ('a'..'z').to_a.shuffle[0,20].join
+            elsif value_type == 'address'
+                return Faker::Address.street_address
+            elsif value_type == 'name'
+                return Faker::Name.name
+            elsif value_type == 'city'
+                return Faker::Address.city
+            elsif value_type == 'time'
+                # Uses 24 hour time and uses format hh:mm:ss
+                hour = my_prng.rand(24).to_s
+                min = my_prng.rand(59)
+                if (min < 10)
+                    min = min.to_s
+                    min = "0"+min
+                end
+                sec = my_prng.rand(59)
+                if (sec < 10)
+                    sec = sec.to_s
+                    sec = "0"+sec
+                end
+                return hour+":"+"#{min}"+":#{sec}"
+            else
+                puts "Ran into a problem while generating data:"
+                puts "Cannot generate random json string for type '#{value_type}'."
+                throw :wrong_type
+            end
         end
     end
 end
+
+# TESTING SECTION
+puts Generator.new.getRandom("time")
+# puts Generator.new.getRandom("ss")

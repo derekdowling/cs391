@@ -7,7 +7,7 @@
     },
     "input_amount": "float",
     "output_amount": "float",
-    "fees": "float,
+    "fees": "float",
     "american": "float",
     "source": {
         "map": {
