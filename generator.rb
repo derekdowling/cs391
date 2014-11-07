@@ -49,25 +49,38 @@ class Generator
         i = 0
         while i < count
 
-            #puts "Generating " << i + 1 << " of " << count
             puts "Generating #{i+1} of #{count}"
 
             #generate random inputs based on keys/values(types) provided from
             #manifest
             json_obj = manifest.clone
-            json_obj.each {|key, val| json_obj[key] = getRandom(val)}
-
+            json_obj.each{|key, val| json_obj[key] = decomposeHash(key, val)}
+           
             #output data to specified buffer
-            @driver.puts JSON.pretty_generate(json_obj)
+            json_obj.each{|key, val| puts "#{key}: #{val}"}
 
             i = i + 1
         end
 
         # finally close our buffer
         puts "Finished, closing buffer"
-        buffer.close()
+        #buffer.close()
         puts "Goodbye!"
     end 
+    
+    # Fills out each element of the hash with random data.
+    def decomposeHash(key, val)
+        # If value is NOT a hash, we are done!
+        if !(val.is_a?(Hash))
+            return getRandom(val)
+        end
+        
+        # Decompose the hash
+        val.each do |key1, val1|
+            val[key1] =  decomposeHash(key1, val1)
+        end
+
+    end
 
     # Given the type of data needed, generates random data
     # Generates: float, int, string, address, name, city
@@ -114,5 +127,5 @@ class Generator
 end
 
 # TESTING SECTION
-puts Generator.new.getRandom("time")
+# puts Generator.new.getRandom("time")
 # puts Generator.new.getRandom("ss")
