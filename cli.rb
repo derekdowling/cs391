@@ -83,24 +83,30 @@ class CLI < Thor
     # Helper Functions Below
     ########################
 
-    # captures and sets up profiling metrics
-    def start_profiler
-        puts "Starting at " << Time.now
-        @start_time = Time.now
-    end
+    # this makes thor not complain about these helpers
+    no_commands do 
 
-    # stops profiling metrics and prints to STDOUT
-    # context allows you to pass in some arbitrary statistics to output, we
-    # may want to look into a profiling gem that can probably do this way better
-    # out of the box
-    def stop_and_stat(context)
-        # stop metrics and calculate
-        @end_time = Time.now
-        @elapsed = (@end_time - @start_time) * 1000.0
+        # captures and sets up profiling metrics
+        def start_profiler
+            puts "Starting at " << Time.now
+            @start_time = Time.now
+        end
 
-        # output results
-        puts "Finised at " << @end_time
-        puts "Took " << @elapsed << " seconds to " << context
+        # stops profiling metrics and prints to STDOUT
+        # context allows you to pass in some arbitrary statistics to output, we
+        # may want to look into a profiling gem that can probably do this way better
+        # out of the box
+        def stop_and_stat(context)
+            # stop metrics and calculate
+            @end_time = Time.now
+            @elapsed = (@end_time - @start_time) * 1000.0
+
+            # output results
+            puts "Finised at " << @end_time
+            puts "Took " << @elapsed << " seconds to " << context
+        end
+
+    # end of no_commands
     end
 end
 
