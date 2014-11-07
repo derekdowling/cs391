@@ -4,8 +4,22 @@
 
 require "elasticsearch/transport"
 
-def connect()
-    client = Elasticsearch::Client.new host: '10.1.3.8:9200'
-    response = client.perform_request 'GET', '_cluster/health'
-    puts response
-end
+class querier
+
+	def connect()
+	    client = Elasticsearch::Client.new host: '10.1.3.8:9200'
+	    response = client.perform_request 'GET', '_cluster/health'
+	    puts response
+	end
+
+
+	def testConnection()
+		client = connect()
+		puts client.cluster.health
+	    end
+
+
+	def close()
+	    # close off connection to Elasticsearch here
+		git pend
+	end
