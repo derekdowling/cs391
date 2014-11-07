@@ -22,6 +22,7 @@ class CLI < Thor
     # CLI Commands
     desc "gen", "Generate n documents from json manifest and optionally load into ES"
     desc "query", "-- NOT YET IMPLEMENTED -- use to run elastic search queries through"
+    desc "ping", "Tests our elastic search connection"
 
     long_desc <<-LONGDESC
     clo:
@@ -72,6 +73,15 @@ class CLI < Thor
             stop_and_stat("query")
         end
     end
+
+    def ping()
+        loader = Loader.new
+        loader.testConnection()
+    end
+
+    ########################
+    # Helper Functions Below
+    ########################
 
     # captures and sets up profiling metrics
     def start_profiler

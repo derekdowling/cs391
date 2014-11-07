@@ -13,9 +13,11 @@ GEM
       multipart-post (>= 1.2, < 3)
     multi_json (1.10.1)
     multipart-post (2.0.0)
+    thor (0.19.1)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   elasticsearch
+  thor
