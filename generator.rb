@@ -25,7 +25,7 @@ class Generator
         # load manifest from file
         key_values = parseManifest()
         # start generating json objects
-        createJson(output, key_values, documents)
+        createJson(@driver, key_values, documents)
     end
 
     # Loads the manifest file, parses it to Json, returns the hash
@@ -90,6 +90,20 @@ class Generator
                 return Faker::Name.name
             elsif value_type == 'city'
                 return Faker::Address.city
+            elsif value_type == 'time'
+                # Uses 24 hour time and uses format hh:mm:ss
+                hour = my_prng.rand(24).to_s
+                min = my_prng.rand(59)
+                if (min < 10)
+                    min = min.to_s
+                    min = "0"+min
+                end
+                sec = my_prng.rand(59)
+                if (sec < 10)
+                    sec = sec.to_s
+                    sec = "0"+sec
+                end
+                return hour+":"+"#{min}"+":#{sec}"
             else
                 puts "Ran into a problem while generating data:"
                 puts "Cannot generate random json string for type '#{value_type}'."
@@ -100,5 +114,5 @@ class Generator
 end
 
 # TESTING SECTION
-# puts Generator.new.getRandom("address")
+puts Generator.new.getRandom("time")
 # puts Generator.new.getRandom("ss")

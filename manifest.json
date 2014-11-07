@@ -1,20 +1,20 @@
 {
     "blocks": {
-        "array" {
+        "array": {
             "block_id": "string",
             "amount": "float"
         }
     },
     "input_amount": "float",
     "output_amount": "float",
-    "fees": "float,
+    "fees": "float",
     "american": "float",
     "source": {
-        "address": "string",
+        "address": "address",
         "hash_160": "string"
     },
     "destination": {
-        "address": "string",
+        "address": "address",
         "hash_160": "string"
     },
     "received_time": "time",
