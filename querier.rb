@@ -21,5 +21,4 @@ class querier
 
 	def close()
 	    # close off connection to Elasticsearch here
-		git pend
 	end
