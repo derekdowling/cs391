@@ -55,7 +55,9 @@ class Generator
             #generate random inputs based on keys/values(types) provided from
             #manifest
             json_obj = manifest.clone
-            json_obj.each {|key, val| json_obj[key] = getRandom(val)}
+            json_obj.each do |key, val|
+                json_obj[key] = getRandom(val)
+            end
 
             #output data to specified buffer
             @driver.puts JSON.pretty_generate(json_obj)
