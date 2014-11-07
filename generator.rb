@@ -25,7 +25,7 @@ class Generator
         # load manifest from file
         key_values = parseManifest()
         # start generating json objects
-        createJson(@driver, key_values, documents)
+        createData(@driver, key_values, documents)
     end
 
     # Loads the manifest file, parses it to Json, returns the hash
@@ -42,39 +42,37 @@ class Generator
 
     # Create JSON objects until count is reached,
     # each time calling
-    def createJson(buffer, manifest, count)
+    def createData(buffer, manifest, count)
 
-        puts "Starting json output"
+        puts "Starting data output"
 
         i = 0
         while i < count
-
+            puts ""
             puts "Generating #{i+1} of #{count}"
 
             #generate random inputs based on keys/values(types) provided from
             #manifest
-            json_obj = manifest.clone
-            json_obj.each{|key, val| json_obj[key] = decomposeHash(key, val)}
-           
-            #output data to specified buffer
-            json_obj.each{|key, val| puts "#{key}: #{val}"}
+            data_hash = manifest.clone
+            data_hash.each{|key, val| data_hash[key] = decomposeHash(key, val)}
 
             i = i + 1
         end
 
-        # finally close our buffer
-        puts "Finished, closing buffer"
-        #buffer.close()
-        puts "Goodbye!"
-    end 
-    
+        puts ""
+
+        puts "Finished data generation!"
+    end
+
     # Fills out each element of the hash with random data.
     def decomposeHash(key, val)
         # If value is NOT a hash, we are done!
         if !(val.is_a?(Hash))
-            return getRandom(val)
+            newval = getRandom(val)
+            puts "#{key}: #{newval}"
+            return newval
         end
-        
+
         # Decompose the hash
         val.each do |key1, val1|
             val[key1] =  decomposeHash(key1, val1)
@@ -125,7 +123,3 @@ class Generator
         end
     end
 end
-
-# TESTING SECTION
-# puts Generator.new.getRandom("time")
-# puts Generator.new.getRandom("ss")
