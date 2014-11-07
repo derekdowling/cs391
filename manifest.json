@@ -1,6 +1,6 @@
 {
     "blocks": {
-        "array": {
+        "map": {
             "block_id": "string",
             "amount": "float"
         }
@@ -10,12 +10,16 @@
     "fees": "float",
     "american": "float",
     "source": {
-        "address": "address",
-        "hash_160": "string"
+        "map": {
+            "address": "string",
+            "hash_160": "string"
+        }
     },
     "destination": {
-        "address": "address",
-        "hash_160": "string"
+        "map": {
+            "address": "string",
+            "hash_160": "string"
+        }
     },
     "received_time": "time",
     "confirmation_time": "time",
