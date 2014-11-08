@@ -40,6 +40,10 @@ class Generator
         return key_values
     end
 
+    def copy() 
+        Marshal.load(Marshal.dump(self))
+    end
+    
     # Create JSON objects until count is reached,
     # each time calling
     def createData(buffer, manifest, count)
@@ -53,9 +57,10 @@ class Generator
 
             #generate random inputs based on keys/values(types) provided from
             #manifest
-            data_hash = manifest.clone
+            # THE FOLLOWING LINE IS THE PROBLEMATIC ONE
+            data_hash = manifest.copy()
             data_hash.each{|key, val| data_hash[key] = decomposeHash(key, val)}
-
+            
             i = i + 1
         end
 
@@ -117,7 +122,7 @@ class Generator
                 return hour+":"+"#{min}"+":#{sec}"
             else
                 puts "Ran into a problem while generating data:"
-                puts "Cannot generate random json string for type '#{value_type}'."
+                puts "Cannot generate random data for type '#{value_type}'."
                 throw :wrong_type
             end
         end
