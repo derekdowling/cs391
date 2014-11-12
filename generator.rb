@@ -57,9 +57,10 @@ class Generator
 
             #generate random inputs based on keys/values(types) provided from
             #manifest
-            # THE FOLLOWING LINE IS THE PROBLEMATIC ONE
-            data_hash = manifest.copy()
-            data_hash.each{|key, val| data_hash[key] = decomposeHash(key, val)}
+            json_obj = manifest.clone
+            json_obj.each do |key, val|
+                json_obj[key] = getRandom(val)
+            end
             
             i = i + 1
         end
