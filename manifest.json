@@ -1,7 +1,7 @@
 {
     "blocks": {
         "map": {
-            "block_id": "string",
+            "account_id": "string",
             "amount": "float"
         }
     },
@@ -9,13 +9,13 @@
     "output_amount": "float",
     "fees": "float",
     "american": "float",
-    "source": {
+    "source_wallet": {
         "map": {
             "address": "address",
             "hash_160": "string"
         }
     },
-    "destination": {
+    "dest_wallet": {
         "map": {
             "address": "address",
             "hash_160": "string"
@@ -32,5 +32,23 @@
     "output_scripts": {
         "array": "string"
     },
-    "user_id": "string"
+    "input_signatures": {
+        "array": {
+            "map": {
+                "user_id": "string",
+                "public_key": "string",
+                "signature_time": "time"
+            }
+        }
+    },
+    "physical_source": {
+        "ipv4": "ip",
+        "country": "country",
+        "business_name": "string"
+    },
+    "physical_dest": {
+        "ipv4": "ip",
+        "country": "country",
+        "business_name": "string"
+    }
 }
