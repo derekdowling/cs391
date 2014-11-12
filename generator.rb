@@ -57,11 +57,11 @@ class Generator
 
             #generate random inputs based on keys/values(types) provided from
             #manifest
-            json_obj = manifest.clone
-            json_obj.each do |key, val|
-                json_obj[key] = getRandom(val)
+            data_hash = manifest.clone()
+            data_hash.each do |key, value|
+                data_hash[key] = decomposeHash(key, val)
             end
-            
+
             i = i + 1
         end
 
@@ -90,7 +90,7 @@ class Generator
     # Generates: float, int, string, address, name, city
     def getRandom(value_type)
         catch (:wrong_type) do
-            my_prng = Random.new(seed = Random.new_seed)
+            my_prng = Random.new(Random.new_seed)
             if value_type == 'float'
                 # Takes any float between 0 and 10,000.00...
                 # Rounds to 2 decimal places
