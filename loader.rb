@@ -23,7 +23,7 @@ class Loader
 
     def upload(client, json)
         client.bulk body: [
-                { index:  { _index: 'myindex', _type: 'mytype', _id: 1, data: { title: 'foo' } } },
+                { index:  { _index: 'myindex', _type: 'mytype', _id: 1, data: json } },
         ]
     end
 
@@ -33,6 +33,6 @@ class Loader
     end
 
     def close()
-        # close ES connection here
+        # not gonna use it. Placeholder
     end
 end

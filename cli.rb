@@ -65,7 +65,6 @@ class CLI < Thor
 
     # this makes thor not complain about these helpers
     no_commands do 
-
         # stops profiling metrics and prints to STDOUT
         # context allows you to pass in some arbitrary statistics to output, we
         # may want to look into a profiling gem that can probably do this way better
@@ -74,12 +73,9 @@ class CLI < Thor
             # stop metrics and calculate
             end_time = Time.now
             elapsed = (end_time - start_time) * 1000.0
-
-            # output results
-            puts "Finised at " << end_time
-            puts "Took " << elapsed << " seconds to " << context
+            puts "Finished at #{start_time}"
+            puts "Took #{elapsed} seconds to #{context}"
         end
-
     # end of no_commands
     end
 end

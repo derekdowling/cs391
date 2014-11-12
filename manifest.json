@@ -11,13 +11,13 @@
     "american": "float",
     "source": {
         "map": {
-            "address": "string",
+            "address": "address",
             "hash_160": "string"
         }
     },
     "destination": {
         "map": {
-            "address": "string",
+            "address": "address",
             "hash_160": "string"
         }
     },
