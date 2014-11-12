@@ -40,8 +40,14 @@ class Generator
         return key_values
     end
 
-    def copy() 
-        Marshal.load(Marshal.dump(self))
+    def copyHash(value)
+        if value.is_a?(Hash)
+            result = value.clone()
+            value.each{|k,v| result[k] = copyHash(v)}
+            return result
+        else
+            return value
+        end
     end
     
     # Create JSON objects until count is reached,
@@ -58,7 +64,7 @@ class Generator
             #generate random inputs based on keys/values(types) provided from
             #manifest
             # THE FOLLOWING LINE IS THE PROBLEMATIC ONE
-            data_hash = manifest.copy()
+            data_hash = copyHash(manifest)
             data_hash.each{|key, val| data_hash[key] = decomposeHash(key, val)}
             
             i = i + 1
