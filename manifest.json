@@ -12,12 +12,14 @@
     "source": {
         "map": {
             "address": "address",
+            "city": "city",
             "hash_160": "string"
         }
     },
     "destination": {
         "map": {
             "address": "address",
+            "city": "city",
             "hash_160": "string"
         }
     },
@@ -32,5 +34,6 @@
     "output_scripts": {
         "array": "string"
     },
-    "user_id": "string"
+    "user_id": "string",
+    "name": "name"
 }

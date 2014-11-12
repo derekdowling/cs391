@@ -106,6 +106,12 @@ class Generator
                 return Faker::Name.name
             elsif value_type == 'city'
                 return Faker::Address.city
+            elsif value_type == 'phone_num'
+                return Faker::PhoneNumber.cell_phone
+            elsif value_type == 'email'
+                return Faker::Internet.email
+            elsif value_type == 'bitcoin'
+                return Faker::Bitcoin.address
             elsif value_type == 'time'
                 # Uses 24 hour time and uses format hh:mm:ss
                 hour = my_prng.rand(24).to_s
