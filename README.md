@@ -60,6 +60,19 @@ Create 5 documents and use a loader:
 ```ruby
 ruby cli.rb gen --driver gen 5
 ```
+Types of Data that can be generated:
+float: any float between 0 and 10,000.00
+int: any integer between 0 and 100,000
+string: 20 random character
+ip: IPv4 address
+credit_card_type: (Ex) visa
+ein: employee ID
+duns_num: duns number, a number given to a company
+
+Self explanatory types:
+address, name, city, phone_num, email, country
+latitude, longitude, zip, credit_card_num,
+credit_card_expiry_date, company, date, time, job_title
 
 Profiling Queries
 ----------------------------------------------------------------------------

@@ -116,8 +116,35 @@ class Generator
                 return Faker::PhoneNumber.cell_phone
             elsif value_type == 'email'
                 return Faker::Internet.email
-            elsif value_type == 'bitcoin'
-                return Faker::Bitcoin.address
+            elsif value_type == 'country'
+                return Faker::Address.country
+            elsif value_type == 'ip'
+                return Faker::Internet.ip_v4_address
+            elsif value_type == 'latitude'
+                return Faker::Address.latitude
+            elsif value_type == 'longitude'
+                return Faker::Address.longitude
+            elsif value_type == 'zip'
+                return Faker::Address.zip
+            elsif value_type == 'credit_card_num'
+                return Faker::Business.credit_card_number
+            elsif value_type == 'credit_card_type'
+                # (Ex) Visa
+                return Faker::Business.credit_card_type
+            elsif value_type == 'credit_card_expiry_date'
+                return Faker::Business.credit_card_expiry_date
+            elsif value_type == 'company'
+                return Faker::Company.name
+            elsif value_type == 'ein'
+                # Employee ID
+                return Faker::Company.ein
+            elsif value_type == 'duns_num'
+                return Faker::Company.duns_number
+            elsif value_type == 'date'
+                # Random date in the past 1000 days
+                return Faker::Date.backward(1000)
+            elsif value_type == 'job_title'
+                return Faker::Name.title
             elsif value_type == 'time'
                 # Uses 24 hour time and uses format hh:mm:ss
                 hour = my_prng.rand(24).to_s
