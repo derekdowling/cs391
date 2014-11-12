@@ -65,7 +65,6 @@ class Generator
             #manifest
             data_hash = copyHash(manifest)
             data_hash.each{|key, val| data_hash[key] = decomposeHash(key, val)}
-
             
             i = i + 1
         end
@@ -82,6 +81,9 @@ class Generator
             newval = getRandom(val)
             puts "#{key}: #{newval}"
             return newval
+        else
+            # Print which hash we are breaking up
+            puts  "---- #{key} contains:"
         end
 
         # Decompose the hash
@@ -95,7 +97,7 @@ class Generator
     # Generates: float, int, string, address, name, city
     def getRandom(value_type)
         catch (:wrong_type) do
-            my_prng = Random.new(seed = Random.new_seed)
+            my_prng = Random.new(Random.new_seed)
             if value_type == 'float'
                 # Takes any float between 0 and 10,000.00...
                 # Rounds to 2 decimal places
@@ -106,6 +108,10 @@ class Generator
             elsif value_type == 'string'
                 # String of 20 random letters
                 return ('a'..'z').to_a.shuffle[0,20].join
+            elsif value_type == 'small_int'
+                return my_prng.rand(100)
+            elsif value_type == 'id'
+                return Faker::Code.ean
             elsif value_type == 'address'
                 return Faker::Address.street_address
             elsif value_type == 'name'

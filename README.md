@@ -63,11 +63,13 @@ ruby cli.rb gen --driver gen 5
 Types of Data that can be generated:
 float: any float between 0 and 10,000.00
 int: any integer between 0 and 100,000
+small_int: any integer between 0 and 100
 string: 20 random character
 ip: IPv4 address
 credit_card_type: (Ex) visa
 ein: employee ID
 duns_num: duns number, a number given to a company
+id: a 13 digit id number
 
 Self explanatory types:
 address, name, city, phone_num, email, country
