@@ -40,8 +40,14 @@ class Generator
         return key_values
     end
 
-    def copy() 
-        Marshal.load(Marshal.dump(self))
+    def copyHash(value)
+        if value.is_a?(Hash)
+            result = value.clone()
+            value.each{|k,v| result[k] = copyHash(v)}
+            return result
+        else
+            return value
+        end
     end
     
     # Create JSON objects until count is reached,
@@ -57,11 +63,9 @@ class Generator
 
             #generate random inputs based on keys/values(types) provided from
             #manifest
-            data_hash = manifest.clone()
-            data_hash.each do |key, value|
-                data_hash[key] = decomposeHash(key, val)
-            end
-
+            data_hash = copyHash(manifest)
+            data_hash.each{|key, val| data_hash[key] = decomposeHash(key, val)}
+            
             i = i + 1
         end
 
@@ -77,6 +81,9 @@ class Generator
             newval = getRandom(val)
             puts "#{key}: #{newval}"
             return newval
+        else
+            # Print which hash we are breaking up
+            puts  "---- #{key} contains:"
         end
 
         # Decompose the hash
@@ -101,12 +108,49 @@ class Generator
             elsif value_type == 'string'
                 # String of 20 random letters
                 return ('a'..'z').to_a.shuffle[0,20].join
+            elsif value_type == 'small_int'
+                return my_prng.rand(100)
+            elsif value_type == 'id'
+                return Faker::Code.ean
             elsif value_type == 'address'
                 return Faker::Address.street_address
             elsif value_type == 'name'
                 return Faker::Name.name
             elsif value_type == 'city'
                 return Faker::Address.city
+            elsif value_type == 'phone_num'
+                return Faker::PhoneNumber.cell_phone
+            elsif value_type == 'email'
+                return Faker::Internet.email
+            elsif value_type == 'country'
+                return Faker::Address.country
+            elsif value_type == 'ip'
+                return Faker::Internet.ip_v4_address
+            elsif value_type == 'latitude'
+                return Faker::Address.latitude
+            elsif value_type == 'longitude'
+                return Faker::Address.longitude
+            elsif value_type == 'zip'
+                return Faker::Address.zip
+            elsif value_type == 'credit_card_num'
+                return Faker::Business.credit_card_number
+            elsif value_type == 'credit_card_type'
+                # (Ex) Visa
+                return Faker::Business.credit_card_type
+            elsif value_type == 'credit_card_expiry_date'
+                return Faker::Business.credit_card_expiry_date
+            elsif value_type == 'company'
+                return Faker::Company.name
+            elsif value_type == 'ein'
+                # Employee ID
+                return Faker::Company.ein
+            elsif value_type == 'duns_num'
+                return Faker::Company.duns_number
+            elsif value_type == 'date'
+                # Random date in the past 1000 days
+                return Faker::Date.backward(1000)
+            elsif value_type == 'job_title'
+                return Faker::Name.title
             elsif value_type == 'time'
                 # Uses 24 hour time and uses format hh:mm:ss
                 hour = my_prng.rand(24).to_s
