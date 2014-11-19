@@ -67,6 +67,8 @@ class Generator
             data_hash.each{|key, val| data_hash[key] = decomposeHash(key, val)}
             
             i = i + 1
+
+            buffer.puts(data_hash.to_json)
         end
 
         puts ""

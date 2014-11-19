@@ -12,7 +12,8 @@ class Loader
     end
 
     def connect()
-        client = Elasticsearch::Client.new host: '10.1.3.8:9200'
+        #client = Elasticsearch::Client.new host: '10.1.3.8:9200'
+        client = Elasticsearch::Client.new host: 'localhost:9200'
         return client
     end
 
@@ -21,15 +22,19 @@ class Loader
         puts client.cluster.health
     end
 
-    def upload(client, json)
+    def upload(client, obj)
         client.bulk body: [
-                { index:  { _index: 'myindex', _type: 'mytype', _id: 1, data: json } },
+                { index:  { _index: 'test', _type: 'json' } },
+                {data:obj} 
         ]
     end
 
     def puts(*objs)
-        output = IO.new STDOUT.fileno
-        output.puts objs
+        # Connect to the server
+        client = connect()
+
+        # Upload the obj we received
+        upload(client, objs)
     end
 
     def close()
