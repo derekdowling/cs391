@@ -22,18 +22,16 @@ class Loader
         puts client.cluster.health
     end
 
-    def upload(client, obj)
-        client.bulk body: [
-                { index:  { _index: 'test', _type: 'json' } },
-                {data:obj} 
-        ]
+    def upload(client, objs)
+        # Uploads all the objects we generated
+        client.bulk body: objs
     end
 
     def puts(*objs)
         # Connect to the server
         client = connect()
 
-        # Upload the obj we received
+        # Upload the array of objects we received
         upload(client, objs)
     end
 

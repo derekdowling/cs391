@@ -40,6 +40,7 @@ class Generator
         return key_values
     end
 
+    # Used to create a deep copy of a hash
     def copyHash(value)
         if value.is_a?(Hash)
             result = value.clone()
@@ -50,11 +51,13 @@ class Generator
         end
     end
     
-    # Create JSON objects until count is reached,
-    # each time calling
+    # Create objects until count is reached
     def createData(buffer, manifest, count)
 
         puts "Starting data output"
+
+        # Create an array to hold all of our generated documents
+        obj_arr = []
 
         i = 0
         while i < count
@@ -67,9 +70,15 @@ class Generator
             data_hash.each{|key, val| data_hash[key] = decomposeHash(key, val)}
             
             i = i + 1
-
-            buffer.puts(data_hash.to_json)
+            
+            json_obj = data_hash.to_json
+            
+            # Add an element to the array specifying we want to index, then add the object to index.
+            obj_arr.push({ index:  { _index: 'test', _type: 'json'} },{data:json_obj})
         end
+
+        # upload all the documents we generated in bulk
+        buffer.puts(obj_arr)
 
         puts ""
 
@@ -81,11 +90,11 @@ class Generator
         # If value is NOT a hash, we are done!
         if !(val.is_a?(Hash))
             newval = getRandom(val)
-            puts "#{key}: #{newval}"
+            #puts "#{key}: #{newval}"
             return newval
         else
             # Print which hash we are breaking up
-            puts  "---- #{key} contains:"
+            #puts  "---- #{key} contains:"
         end
 
         # Decompose the hash
