@@ -2,18 +2,16 @@ require "elasticsearch"
 
 class Loader
 
-    # Constructor, add state here
-    def initialize()
-    end
+    @target
 
-    def populate()
-        client = connect()
-        upload(client)
+    # Constructor, add state here
+    def initialize(target = '10.1.3.8:9200')
+        @target = target
     end
 
     def connect()
         #client = Elasticsearch::Client.new host: '10.1.3.8:9200'
-        client = Elasticsearch::Client.new host: 'localhost:9200'
+        client = Elasticsearch::Client.new host: @target
         return client
     end
 
@@ -22,17 +20,12 @@ class Loader
         puts client.cluster.health
     end
 
-    def upload(client, objs)
-        # Uploads all the objects we generated
-        client.bulk body: objs
-    end
-
-    def puts(*objs)
+    def puts(objs)
         # Connect to the server
         client = connect()
 
         # Upload the array of objects we received
-        upload(client, objs)
+        client.bulk body: objs
     end
 
     def close()

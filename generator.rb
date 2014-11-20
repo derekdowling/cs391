@@ -68,11 +68,11 @@ class Generator
             #manifest
             data_hash = copyHash(manifest)
             data_hash.each{|key, val| data_hash[key] = decomposeHash(key, val)}
-            
+
             i = i + 1
-            
+
             json_obj = data_hash.to_json
-            
+
             # Add an element to the array specifying we want to index, then add the object to index.
             obj_arr.push({ index:  { _index: 'test', _type: 'json'} },{data:json_obj})
         end
