@@ -38,7 +38,7 @@
             "dest_city": "city",
             "dest_country": "country",
             "dest_hash_160": "string",
-            "account_id": "ean",
+            "account_id": "ein",
             "branch_num": "small_int",
             "bank_id": "int",
             "account_type": "int"
