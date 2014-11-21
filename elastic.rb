@@ -22,9 +22,15 @@ class Elastic
         return @client
     end
 
-    def testConnection()
-        puts connect().cluster.health
-        pp connect().indices.stats()
+    def testConnection(stats = false, nodes = false)
+        pp connect().cluster.health
+
+        if stats
+            pp connect().indices.stats()
+        end
+        if nodes
+            pp connect().cluster.get_settings()
+        end
     end
 
     # Use this to bulk load data into ES

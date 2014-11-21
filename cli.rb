@@ -60,6 +60,8 @@ class CLI < Thor
 
     desc "ping", "Tests our elastic search connection"
     option :cluster, :type => :boolean, :aliases => :c, :desc => "Perform actions against the cluster"
+    option :stats, :type => :boolean, :aliases => :s, :desc => "Also prints cluster stats"
+    option :nodes, :type => :boolean, :aliases => :n, :desc => "Also prints node settings"
     def ping()
 
         elastic = Elastic.new
@@ -68,7 +70,7 @@ class CLI < Thor
             elastic.useCluster()
         end
 
-        elastic.testConnection()
+        elastic.testConnection(options[:stats],options[:nodes])
     end
 
     ########################
