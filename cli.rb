@@ -15,18 +15,21 @@ class CLI < Thor
     option :manifest, :type => :string, :desc => "NOT YET IMPLEMENTED, allows you to specify a specific manifest"
     option :cluster, :type => :boolean, :aliases => :c, :desc => "Perform actions against the cluster if we are using the Elastic driver"
     option :benchmark, :type => :boolean, :aliases => :b, :desc => "Benchmarks query while performing it"
+    option :hardcore, :type => :boolean, :aliases => :h, :desc => "Used when loading to the cluster locally"
     def gen(num_docs)
         # Convert number of documents to generate to an interger 
         num_docs = num_docs.to_i
         generator = Generator.new
 
         # Generate n documents, and loads them into elastic search. 
-        if options[:driver] || [:cluster]
+        if options[:driver] || options[:cluster] || options[:hardcore]
             puts "Loading results into ES"
             elastic = Elastic.new
 
             if options[:cluster]
                 elastic.useCluster()
+            elsif options [:hardcore]
+                elastic.useLocalCluster()
             end
             generator.setDriver(elastic)
         end

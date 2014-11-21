@@ -1,10 +1,4 @@
 {
-    "blocks": {
-        "map": {
-            "account_id": "id",
-            "amount": "float"
-        }
-    },
     "input_amount": "float",
     "output_amount": "float",
     "fees": "float",
@@ -17,7 +11,7 @@
             "source_city": "city",
             "source_country": "country",
             "source_hash_160": "string",
-            "account_id": "id",
+            "account_id": "ein",
             "branch_num": "small_int",
             "bank_id": "int",
             "account_type": "small_int"
@@ -25,7 +19,7 @@
     },
     "source_account_info": {
         "account_holder": "name",
-        "account_holder_id": "ein",
+        "account_holder_id": "id",
         "account_creation_date": "date",
         "account_creation_time": "time",
         "account_email": "email",
@@ -44,7 +38,7 @@
             "dest_city": "city",
             "dest_country": "country",
             "dest_hash_160": "string",
-            "account_id": "id",
+            "account_id": "ean",
             "branch_num": "small_int",
             "bank_id": "int",
             "account_type": "int"
@@ -52,7 +46,7 @@
     },
     "dest_account_info": {
         "account_holder": "name",
-        "account_holder_id": "ein",
+        "account_holder_id": "id",
         "account_creation_date": "date",
         "account_creation_time": "time",
         "account_email": "email",
@@ -74,7 +68,7 @@
     "input_signatures": {
         "array": {
             "map": {
-                "user_id": "ein",
+                "account_holder_id": "id",
                 "name": "name",
                 "public_key": "string",
                 "signature_time": "time",

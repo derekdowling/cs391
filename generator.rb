@@ -147,9 +147,12 @@ class Generator
                 # String of 20 random letters
                 return ('a'..'z').to_a.shuffle[0,20].join
             elsif value_type == 'small_int'
-                return my_prng.rand(100)
+                # Int between 0 and 30,000
+                # Want to keep this number fairly small so we
+                # have more interesting queries
+                return my_prng.rand(30000)
             elsif value_type == 'id'
-                return Faker::Code.ean
+                return my_prng.rand(100000)
             elsif value_type == 'address'
                 return Faker::Address.street_address
             elsif value_type == 'name'
