@@ -5,6 +5,18 @@
     "american": "float",
     "transaction_num": "int",
     "transaction_type": "small_int",
+    "transaction_info":{
+        "route_num": "duns_num",
+        "route_type": "small_int",
+        "checksum": "int",
+        "packet_count": "small_int",
+        "priority_code": "small_int",
+        "position": "int",
+        "flag_type": "small_int",
+        "service_code": "int",
+        "source_port_code": "int",
+        "dest_port_code": "int"
+    },
     "source_account": {
         "map": {
             "source_address": "address",
