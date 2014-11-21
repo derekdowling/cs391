@@ -5,12 +5,8 @@ require 'faker'
 class Generator
 
     # the output driver to use
-    @driver
-
-    # sets up the Generator
-    def initialize(driver = IO.new(STDOUT.fileno))
-        @driver
-    end
+    @driver = IO.new(STDOUT.fileno)
+    @bulk_max = 1000
 
     def setDriver(driver)
         @driver = driver
@@ -19,24 +15,22 @@ class Generator
     # Call this to generate json output
     # Has some default values for parameters, can pass in own values
     def generate(documents = 1)
-
         puts "Starting data generation"
 
         # load manifest from file
         key_values = parseManifest()
+
         # start generating json objects
         createData(@driver, key_values, documents)
     end
 
     # Loads the manifest file, parses it to Json, returns the hash
     def parseManifest()
-
         puts "Parsing manifest file"
 
         file = File.read('manifest.json')
         key_values = JSON.parse(file)
-        puts key_values
-
+        puts "Generating documents with #{key_values.length} columns"
         return key_values
     end
 
@@ -50,38 +44,71 @@ class Generator
             return value
         end
     end
-    
+
     # Create objects until count is reached
     def createData(buffer, manifest, count)
 
-        puts "Starting data output"
+        puts "Starting generation"
 
-        # Create an array to hold all of our generated documents
-        obj_arr = []
+        # counters
+        gen_count = 0
+        bulk_max = 1500
 
-        i = 0
-        while i < count
-            puts ""
-            puts "Generating #{i+1} of #{count}"
+        # tuning variables
+        last_exec_ratio = 0.0
+        exec_ratio = 0.0
+        while gen_count < count do
 
-            #generate random inputs based on keys/values(types) provided from
-            #manifest
-            data_hash = copyHash(manifest)
-            data_hash.each{|key, val| data_hash[key] = decomposeHash(key, val)}
-            
-            i = i + 1
-            
-            json_obj = data_hash.to_json
-            
-            # Add an element to the array specifying we want to index, then add the object to index.
-            obj_arr.push({ index:  { _index: 'test', _type: 'json'} },{data:json_obj})
+            puts last_exec_ratio
+            puts exec_ratio
+            # tuning
+            if exec_ratio > last_exec_ratio
+                bulk_max += 20
+            else
+                bulk_max -= 20
+            end
+
+            # save our last exec ratio
+            last_exec_ratio = exec_ratio
+
+            # Create an array to hold all of our generated documents for each
+            # bulk upload
+            obj_arr = []
+            bulk_count = 0
+
+            puts "Next:#{bulk_max} - Current:#{gen_count}/#{count}"
+            start_time = Time.now
+
+            while gen_count < count && bulk_count < bulk_max do
+
+                #generate random inputs based on keys/values(types) provided from
+                #manifest
+                data_hash = copyHash(manifest)
+                data_hash.each do |key, val|
+                    data_hash[key] = decomposeHash(key, val)
+                end
+
+                # Add an element to the array specifying we want to index, then add the object to index.
+                obj_arr.push({ index: { _index: 'customer', _type: 'payments'} },{ data: data_hash })
+
+                gen_count += 1
+                bulk_count += 1
+            end
+
+            # upload all the documents we generated in bulk
+            if @driver.is_a?(Elastic)
+                @driver.bulk_load(obj_arr)
+            else
+                puts obj_arr
+            end
+
+            # Tuning Vars and Output
+            end_time = Time.now
+            exec_time = (end_time - start_time)
+            exec_ratio = bulk_count / exec_time
+            puts "Took #{exec_time} seconds to upload #{bulk_count+1}: #{exec_ratio}"
+
         end
-
-        # upload all the documents we generated in bulk
-        buffer.puts(obj_arr)
-
-        puts ""
-
         puts "Finished data generation!"
     end
 
@@ -120,9 +147,12 @@ class Generator
                 # String of 20 random letters
                 return ('a'..'z').to_a.shuffle[0,20].join
             elsif value_type == 'small_int'
-                return my_prng.rand(100)
+                # Int between 0 and 30,000
+                # Want to keep this number fairly small so we
+                # have more interesting queries
+                return my_prng.rand(30000)
             elsif value_type == 'id'
-                return Faker::Code.ean
+                return my_prng.rand(100000)
             elsif value_type == 'address'
                 return Faker::Address.street_address
             elsif value_type == 'name'
