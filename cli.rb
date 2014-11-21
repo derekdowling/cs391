@@ -28,7 +28,7 @@ class CLI < Thor
 
             if options[:cluster]
                 elastic.useCluster()
-            elsif options [:hardcore]
+            elsif options[:hardcore]
                 elastic.useLocalCluster()
             end
             generator.setDriver(elastic)
