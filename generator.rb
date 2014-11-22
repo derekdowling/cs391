@@ -63,7 +63,9 @@ class Generator
 
         # tuning variables
         last_exec_ratio = 0.0
+        last_gen_count = 0
         exec_ratio = 0.0
+        start_time = Time.now
         # RubyProf.start
         while gen_count < count do
 
@@ -72,12 +74,8 @@ class Generator
 
             # Create an array to hold all of our generated documents for each
             # bulk upload
-            obj_arr = []
+            obj = []
             bulk_count = 0
-
-            puts "Next:#{bulk_max} - Current:#{gen_count}/#{count}"
-            start_time = Time.now
-
 
             while gen_count < count && bulk_count < bulk_max do
 
@@ -88,9 +86,8 @@ class Generator
                     data_hash[key] = decomposeHash(key, val)
                 end
 
-
                 # Add an element to the array specifying we want to index, then add the object to index.
-                obj_arr.push({ index: { _index: :customer, _type: :payments} },{ data: data_hash })
+                obj.push({ index: { _index: :customer, _type: :payments} },{ data: data_hash })
 
                 gen_count += 1
                 bulk_count += 1
@@ -99,15 +96,21 @@ class Generator
 
             # upload all the documents we generated in bulk
             if @driver.is_a?(Elastic)
-                @driver.bulk_load(obj_arr)
+                @driver.bulk_load(obj)
             end
 
             # Tuning Vars and Output
-            end_time = Time.now
-            exec_time = end_time - start_time
-            exec_ratio = bulk_count / exec_time
-            gph = exec_ratio * dgh
-            puts "#T:#{exec_time} #C:#{bulk_count+1} #R:#{exec_ratio} #G/H:#{gph}"
+            if gen_count % 12000 == 0
+                end_time = Time.now
+
+                change = gen_count - last_gen_count
+                exec_time = end_time - start_time
+                exec_ratio = change / exec_time
+                gph = exec_ratio * dgh
+
+                puts "#T:#{exec_time} #C:#{change} #R:#{exec_ratio} #G/H:#{gph}"
+                start_time = Time.now
+            end
 
         end
 
