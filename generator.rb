@@ -56,21 +56,22 @@ class Generator
 
         # counters
         gen_count = 0
-        bulk_max = 1500
+
+        if count * 2 > 3000
+            bulk_max = 3000
+        elsif
+            bulk_max = count * 2
+        end
 
         doc_size = 3000.0
         dgh = doc_size * 3600.0 / 1000000000.0
 
         # tuning variables
-        last_exec_ratio = 0.0
         last_gen_count = 0
         exec_ratio = 0.0
         start_time = Time.now
         # RubyProf.start
         while gen_count < count do
-
-            # save our last exec ratio
-            last_exec_ratio = exec_ratio
 
             # Create an array to hold all of our generated documents for each
             # bulk upload
@@ -87,23 +88,20 @@ class Generator
                 end
 
                 # Add an element to the array specifying we want to index, then add the object to index.
-                obj.insert(bulk_count, { index: { _index: :customer, _type: :payments} },{ data: data_hash })
+                obj[bulk_count] = {index: { _index: :customer, _type: :payments}}
+                obj[bulk_count + 1] = {data: data_hash}
 
                 gen_count += 1
-                bulk_count += 1
+                bulk_count += 2
             end
-
 
             # upload all the documents we generated in bulk
             if @driver.is_a?(Elastic)
-                begin
-                    @driver.bulk_load(obj)
-                rescue
-                end
+                @driver.bulk_load(obj)
             end
 
             # Tuning Vars and Output
-            if gen_count % 24000 == 0
+            if gen_count % 24000 == 0 || gen_count == count then
                 end_time = Time.now
 
                 change = gen_count - last_gen_count

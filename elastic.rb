@@ -53,7 +53,7 @@ class Elastic
                 }
             }
         else
-            puts connect().search body: query
+            connect().search body: query
         end
     end
 

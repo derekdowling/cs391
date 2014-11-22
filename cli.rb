@@ -16,10 +16,13 @@ class CLI < Thor
     option :cluster, :type => :boolean, :aliases => :c, :desc => "Perform actions against the cluster if we are using the Elastic driver"
     option :benchmark, :type => :boolean, :aliases => :b, :desc => "Benchmarks query while performing it"
     option :hardcore, :type => :boolean, :aliases => :h, :desc => "Used when loading to the cluster locally"
+    option :threads, :type => :numeric, :aliases => :t, :desc => "Number of threads to use, defaults to one"
     def gen(num_docs)
         # Convert number of documents to generate to an interger 
         num_docs = num_docs.to_i
         generator = Generator.new
+        # thread_count = 1
+        # threads = []
 
         # Generate n documents, and loads them into elastic search. 
         if options[:driver] || options[:cluster] || options[:hardcore]
@@ -34,12 +37,27 @@ class CLI < Thor
             generator.setDriver(elastic)
         end
 
-        start_ts = Time.now
+        # if options[:threads]
+            # thread_count = options[:threads]
+        # end
 
-        # generate and output
         generator.generate(num_docs)
 
-        stop_and_stat(start_ts, "load " << num_docs << "docs")
+        # thread_count.times {
+            # # spawn threads
+            # threads << Thread.new {
+                # puts "startin"
+                # # generate and output
+                # generator.generate(num_docs)
+            # }
+        # }
+
+        # # collect threads
+        # threads.each { |thr|
+            # thr.join
+        # }
+
+        puts "Done"
     end
 
     long_desc <<-END

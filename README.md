@@ -79,3 +79,8 @@ credit_card_expiry_date, company, date, time, job_title
 Profiling Queries
 ----------------------------------------------------------------------------
 COMING SOON.
+
+
+
+After:
+refresh parameter can be set to true
