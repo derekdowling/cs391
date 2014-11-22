@@ -74,7 +74,7 @@ class Generator
 
             # Create an array to hold all of our generated documents for each
             # bulk upload
-            obj = []
+            obj = Array.new(bulk_max)
             bulk_count = 0
 
             while gen_count < count && bulk_count < bulk_max do
@@ -87,7 +87,7 @@ class Generator
                 end
 
                 # Add an element to the array specifying we want to index, then add the object to index.
-                obj.push({ index: { _index: :customer, _type: :payments} },{ data: data_hash })
+                obj.insert(bulk_count, { index: { _index: :customer, _type: :payments} },{ data: data_hash })
 
                 gen_count += 1
                 bulk_count += 1
@@ -96,7 +96,11 @@ class Generator
 
             # upload all the documents we generated in bulk
             if @driver.is_a?(Elastic)
-                @driver.bulk_load(obj)
+                begin
+                    @driver.bulk_load(obj)
+                rescue Exception => e
+                    puts e.message
+                end
             end
 
             # Tuning Vars and Output
