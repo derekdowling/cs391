@@ -6,7 +6,6 @@ class Generator
 
     # the output driver to use
     @driver = IO.new(STDOUT.fileno)
-    @bulk_max = 450
 
     def setDriver(driver)
         @driver = driver
@@ -53,6 +52,9 @@ class Generator
         # counters
         gen_count = 0
         bulk_max = 450
+
+        doc_size = 3000.0
+        dgh = doc_size * 3600.0 / 1000000000.0
 
         # tuning variables
         last_exec_ratio = 0.0
@@ -104,9 +106,10 @@ class Generator
 
             # Tuning Vars and Output
             end_time = Time.now
-            exec_time = (end_time - start_time)
+            exec_time = end_time - start_time
             exec_ratio = bulk_count / exec_time
-            puts "Took #{exec_time} seconds to upload #{bulk_count+1}: #{exec_ratio}"
+            gph = exec_ratio * dgh
+            puts "#T:#{exec_time} #C:#{bulk_count+1} #R:#{exec_ratio} #G/H:#{gph}"
 
         end
         puts "Finished data generation!"
