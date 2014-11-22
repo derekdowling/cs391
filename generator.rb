@@ -52,7 +52,7 @@ class Generator
 
         # counters
         gen_count = 0
-        bulk_max = 1500
+        bulk_max = 450
 
         # tuning variables
         last_exec_ratio = 0.0
