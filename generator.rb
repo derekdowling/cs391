@@ -1,11 +1,19 @@
 require 'json'
 require 'rubygems'
 require 'faker'
+require 'ruby-prof'
 
 class Generator
 
     # the output driver to use
-    @driver = IO.new(STDOUT.fileno)
+    def initialize()
+        @driver = IO.new(STDOUT.fileno)
+        @manifest = {}
+        @name = [ "Jane" , "Bob", "Tim", "Joanne", "Lucy", "Jessica", "Tony", "Jason", "Rex", "Jas", "Alex" ]
+        @country = [ "CA", "USA", "MEX", "UK", "FR", "GER", "DL", "GRC", "ESP" ]
+        @email = [ "123@gmail.com", "sweetdood@yahoo.com", "edm@msn.ca", "llcoolj@gmail.com", "wasabi@gov.ab.ca" ]
+        @business = [ "SuperHoldings LTD", "Walmart", "Superstore", "Italian Centre", "Best Buy", "Future Shop", "Sears", "Zellers" ]
+    end
 
     def setDriver(driver)
         @driver = driver
@@ -33,15 +41,8 @@ class Generator
         return key_values
     end
 
-    # Used to create a deep copy of a hash
-    def copyHash(value)
-        if value.is_a?(Hash)
-            result = value.clone()
-            value.each{|k,v| result[k] = copyHash(v)}
-            return result
-        else
-            return value
-        end
+    def copyHash(hash)
+        return Marshal.load(Marshal.dump(hash))
     end
 
     # Create objects until count is reached
@@ -83,12 +84,17 @@ class Generator
 
             while gen_count < count && bulk_count < bulk_max do
 
+                # RubyProf.start
                 #generate random inputs based on keys/values(types) provided from
                 #manifest
                 data_hash = copyHash(manifest)
                 data_hash.each do |key, val|
                     data_hash[key] = decomposeHash(key, val)
                 end
+
+                # result = RubyProf.stop
+                # printer = RubyProf::FlatPrinter.new(result)
+                # printer.print(STDOUT)
 
                 # Add an element to the array specifying we want to index, then add the object to index.
                 obj_arr.push({ index: { _index: 'customer', _type: 'payments'} },{ data: data_hash })
@@ -157,17 +163,17 @@ class Generator
             elsif value_type == 'id'
                 return my_prng.rand(100000)
             elsif value_type == 'address'
-                return Faker::Address.street_address
+                return my_prng.rand(99999)
             elsif value_type == 'name'
-                return Faker::Name.name
+                return @name[my_prng.rand(@name.length - 1)]
             elsif value_type == 'city'
                 return Faker::Address.city
             elsif value_type == 'phone_num'
-                return Faker::PhoneNumber.cell_phone
+                return my_prng.rand(9999999999)
             elsif value_type == 'email'
-                return Faker::Internet.email
+                return @email[my_prng.rand(@email.length - 1)]
             elsif value_type == 'country'
-                return Faker::Address.country
+                return @country[my_prng.rand(@country.length - 1)]
             elsif value_type == 'ip'
                 return Faker::Internet.ip_v4_address
             elsif value_type == 'latitude'
@@ -175,7 +181,7 @@ class Generator
             elsif value_type == 'longitude'
                 return Faker::Address.longitude
             elsif value_type == 'zip'
-                return Faker::Address.zip
+                return my_prng.rand(99999)
             elsif value_type == 'credit_card_num'
                 return Faker::Business.credit_card_number
             elsif value_type == 'credit_card_type'
@@ -184,7 +190,7 @@ class Generator
             elsif value_type == 'credit_card_expiry_date'
                 return Faker::Business.credit_card_expiry_date
             elsif value_type == 'company'
-                return Faker::Company.name
+                return @business[my_prng.rand(@business.length - 1)]
             elsif value_type == 'ein'
                 # Employee ID
                 return Faker::Company.ein

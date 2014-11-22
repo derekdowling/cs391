@@ -4,8 +4,10 @@ require "pp"
 # docs: http://www.rubydoc.info/gems/elasticsearch-api/
 class Elastic
 
-    @target = '10.1.3.8:9200'
-    @client = nil
+    def initialize()
+        @target = '10.1.3.8:9200'
+        @client = nil
+    end
 
     def useCluster()
         @target = '199.116.235.83:9200'
