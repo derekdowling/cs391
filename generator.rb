@@ -6,7 +6,7 @@ class Generator
 
     # the output driver to use
     @driver = IO.new(STDOUT.fileno)
-    @bulk_max = 1000
+    @bulk_max = 450
 
     def setDriver(driver)
         @driver = driver
