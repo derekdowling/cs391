@@ -11,7 +11,7 @@ require_relative "elastic"
 class CLI < Thor
 
     desc "gen <num_docs>", "Generates <num_docs> from a JSON manifest"
-    option :driver, :type => :boolean, :aliases => :d, :desc => "Indicate if we are using the Elastic Driver"
+    option :dev, :type => :boolean, :aliases => :d, :desc => "Connects to your local Dev ES Instance"
     option :manifest, :type => :string, :desc => "NOT YET IMPLEMENTED, allows you to specify a specific manifest"
     option :cluster, :type => :boolean, :aliases => :c, :desc => "Perform actions against the cluster if we are using the Elastic driver"
     option :benchmark, :type => :boolean, :aliases => :b, :desc => "Benchmarks query while performing it"
@@ -26,10 +26,10 @@ class CLI < Thor
             puts "Loading results into ES"
             elastic = Elastic.new
 
-            if options[:cluster]
-                elastic.useCluster()
-            elsif options[:hardcore]
+            if options[:hardcore]
                 elastic.useLocalCluster()
+            elsif options[:cluster]
+                elastic.useCluster()
             end
             generator.setDriver(elastic)
         end
@@ -42,19 +42,28 @@ class CLI < Thor
         stop_and_stat(start_ts, "load " << num_docs << "docs")
     end
 
-    desc "query <json>", "-- NOT YET IMPLEMENTED -- use to run elastic search queries through"
-    option :cluster, :type => :boolean, :aliases => :c, :desc => "Perform actions against the cluster"
+    long_desc <<-END
+        Query docs: http://www.rubydoc.info/gems/elasticsearch-api/Elasticsearch/API/Actions#search-instance_method
+
+        Example:
+
+            query _customer {"from":0,"size":10,"fields":["dest_account"]}
+    END
+    desc "query <index> <json>", "Runs an elastic search query"
+    option :cluster, :type => :boolean, :aliases => :c, :desc => "Perform query against the cluster"
     option :benchmark, :type => :boolean, :aliases => :b, :desc => "Benchmarks query while performing it"
-    def query(json)
+    def query(index, json)
         elastic = Elastic.new
         if options[:cluster]
             elastic.useCluster()
         end
 
+        query = { :index => index, :body => JSON.parse(json) }
+
         if options[:benchmark]
-            elastic.query(JSON.parse(json), true)
+            elastic.search(query, true)
         else
-            elastic.query(JSON.parse(json))
+            elastic.search(query)
         end
     end
 
@@ -73,6 +82,18 @@ class CLI < Thor
         elastic.testConnection(options[:stats],options[:nodes])
     end
 
+    desc "mode", "Changes various cluster settings"
+    option :bulk, :type => :boolean, :aliases => :b, :desc => "Optimizes settings for bulk loading"
+    option :search, :type => :boolean, :aliases => :s, :desc => "Turns the cluster to search mode" 
+    def mode()
+        if options[:bulk]
+            elastic.mode(true)
+        end
+        if options[:search]
+            elastic.mode(false)
+        end
+    end
+
     ########################
     # Helper Functions Below
     ########################
@@ -86,7 +107,7 @@ class CLI < Thor
         def stop_and_stat(start_time, context)
             # stop metrics and calculate
             end_time = Time.now
-            elapsed = (end_time - start_time) * 1000.0
+            elapsed = (end_time - start_time)
             puts "Finished at #{start_time}"
             puts "Took #{elapsed} seconds to #{context}"
         end
