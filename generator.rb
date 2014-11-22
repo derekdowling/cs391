@@ -1,7 +1,7 @@
 require 'json'
 require 'rubygems'
-require 'faker'
 require 'ruby-prof'
+require 'date'
 
 class Generator
 
@@ -16,6 +16,8 @@ class Generator
         @city = [ "Edmonton", "London", "Paris", "Munich", "Athens", "Barcelona", "Mexico City", "New York", "Calgary", "Austin" ]
         @ip = [ "123.673.683.23", "123.379.231.547", "234.732.134.564", "234.437.243.12", "123.675.234.785", "234.547.321.673", "235.458.234.83" ]
         @rand = Random.new(Random.new_seed)
+        @cc = [ "Visa", "Mastercard", "American Express", "Maestro", "Discovery", "Diner's Club" ]
+        @job = [ "CEO", "CFO", "CIO", "CTO", "Department Manager", "Employee", "Intern", "VP", "Board Member" ]
     end
 
     def setDriver(driver)
@@ -63,8 +65,6 @@ class Generator
         exec_ratio = 0.0
         while gen_count < count do
 
-            puts last_exec_ratio
-            puts exec_ratio
             # tuning
             if exec_ratio > last_exec_ratio
                 bulk_max += 20
@@ -94,14 +94,14 @@ class Generator
                     data_hash[key] = decomposeHash(key, val)
                 end
 
-                
+
                 # Add an element to the array specifying we want to index, then add the object to index.
                 obj_arr.push({ index: { _index: 'customer', _type: 'payments'} },{ data: data_hash })
 
                 gen_count += 1
                 bulk_count += 1
             end
-            
+
             # result = RubyProf.stop
             # printer = RubyProf::FlatPrinter.new(result)
             # printer.print(STDOUT)
@@ -149,11 +149,9 @@ class Generator
                 # Rounds to 2 decimal places
                 return @rand.rand(10000.0).round(2)
             elsif value_type == 'int'
-                # Int between 0 and 100,000
                 return @rand.rand(100000)
-            elsif value_type == 'string'
-                # String of 20 random letters
-                return ('a'..'z').to_a.shuffle[0,20].join
+            elsif value_type == 'hash'
+                return @rand.rand(999999999999)
             elsif value_type == 'small_int'
                 # Int between 0 and 30,000
                 # Want to keep this number fairly small so we
@@ -176,30 +174,24 @@ class Generator
             elsif value_type == 'ip'
                 return @ip[@rand.rand(@ip.length - 1)]
             elsif value_type == 'latitude'
-                return Faker::Address.latitude
+                return @rand.rand(-90.0..90.0)
             elsif value_type == 'longitude'
-                return Faker::Address.longitude
+                return @rand.rand(-180.0..180.0)
             elsif value_type == 'zip'
                 return @rand.rand(99999)
             elsif value_type == 'credit_card_num'
-                return Faker::Business.credit_card_number
+                return @rand.rand(4999999999999999)
             elsif value_type == 'credit_card_type'
-                # (Ex) Visa
-                return Faker::Business.credit_card_type
+                return @cc[@rand.rand(@cc.length - 1)]
             elsif value_type == 'credit_card_expiry_date'
-                return Faker::Business.credit_card_expiry_date
+                return "#{@rand.rand(12)}" << "#{@rand.rand(31)}"
             elsif value_type == 'company'
                 return @business[@rand.rand(@business.length - 1)]
-            elsif value_type == 'ein'
-                # Employee ID
-                return Faker::Company.ein
-            elsif value_type == 'duns_num'
-                return Faker::Company.duns_number
             elsif value_type == 'date'
-                # Random date in the past 1000 days
-                return Faker::Date.backward(1000)
+                # Random date in the past 90 days
+                return Date.today - @rand.rand(365)
             elsif value_type == 'job_title'
-                return Faker::Name.title
+                return @job[@rand.rand(@job.length - 1)]
             elsif value_type == 'time'
                 # Uses 24 hour time and uses format hh:mm:ss
                 hour = @rand.rand(24).to_s

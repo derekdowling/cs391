@@ -6,7 +6,7 @@
     "transaction_num": "int",
     "transaction_type": "small_int",
     "transaction_info":{
-        "route_num": "duns_num",
+        "route_num": "int",
         "route_type": "small_int",
         "checksum": "int",
         "packet_count": "small_int",
@@ -22,8 +22,8 @@
             "source_address": "address",
             "source_city": "city",
             "source_country": "country",
-            "source_hash_160": "string",
-            "account_id": "ein",
+            "source_hash_160": "hash",
+            "account_id": "id",
             "branch_num": "small_int",
             "bank_id": "int",
             "account_type": "small_int"
@@ -49,8 +49,8 @@
             "dest_address": "address",
             "dest_city": "city",
             "dest_country": "country",
-            "dest_hash_160": "string",
-            "account_id": "ein",
+            "dest_hash_160": "int",
+            "account_id": "id",
             "branch_num": "small_int",
             "bank_id": "int",
             "account_type": "int"
@@ -71,18 +71,18 @@
     "confirmation_count": "int",
     "size_b": "int",
     "relay_ip": "ip",
-    "input_scripts": {
-        "array": "string"
+    "input_hash": {
+        "array": "hash"
     },
-    "output_scripts": {
-        "array": "string"
+    "output_hash": {
+        "array": "hash"
     },
     "input_signatures": {
         "array": {
             "map": {
                 "account_holder_id": "id",
                 "name": "name",
-                "public_key": "string",
+                "public_key": "hash",
                 "signature_time": "time",
                 "relations_code": "id"
             }
@@ -94,7 +94,7 @@
         "city": "city",
         "business_name": "company",
         "zip": "zip",
-        "duns_num": "duns_num",
+        "duns_num": "int",
         "latitude": "latitude",
         "longitude": "longitude",
         "account_type":"small_int"
@@ -105,7 +105,7 @@
         "city": "city",
         "business_name": "company",
         "zip": "zip",
-        "duns_num": "duns_num",
+        "duns_num": "int",
         "latitude": "latitude",
         "longitude": "longitude",
         "account_type": "small_int"
