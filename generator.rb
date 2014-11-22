@@ -98,8 +98,7 @@ class Generator
             if @driver.is_a?(Elastic)
                 begin
                     @driver.bulk_load(obj)
-                rescue Exception => e
-                    puts e.message
+                rescue
                 end
             end
 
