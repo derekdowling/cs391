@@ -25,10 +25,10 @@ class Generator
         puts "Starting data generation"
 
         # load manifest from file
-        key_values = parseManifest()
+        parseManifest()
 
         # start generating json objects
-        createData(@driver, key_values, documents)
+        createData(@driver, documents)
     end
 
     # Loads the manifest file, parses it to Json, returns the hash
@@ -36,9 +36,7 @@ class Generator
         puts "Parsing manifest file"
 
         file = File.read('manifest.json')
-        key_values = JSON.parse(file)
-        puts "Generating documents with #{key_values.length} columns"
-        return key_values
+        @manifest = JSON.parse(file)
     end
 
     def copyHash(hash)
@@ -46,7 +44,7 @@ class Generator
     end
 
     # Create objects until count is reached
-    def createData(buffer, manifest, count)
+    def createData(buffer, count)
 
         puts "Starting generation"
 
@@ -87,8 +85,8 @@ class Generator
                 # RubyProf.start
                 #generate random inputs based on keys/values(types) provided from
                 #manifest
-                data_hash = copyHash(manifest)
-                data_hash.each do |key, val|
+                data_hash = {}
+                @manifest.each do |key, val|
                     data_hash[key] = decomposeHash(key, val)
                 end
 
@@ -124,19 +122,16 @@ class Generator
     # Fills out each element of the hash with random data.
     def decomposeHash(key, val)
         # If value is NOT a hash, we are done!
-        if !(val.is_a?(Hash))
-            newval = getRandom(val)
-            #puts "#{key}: #{newval}"
-            return newval
-        else
-            # Print which hash we are breaking up
-            #puts  "---- #{key} contains:"
+        if !val.is_a?(Hash)
+            return getRandom(val)
         end
 
         # Decompose the hash
+        hash = {}
         val.each do |key1, val1|
-            val[key1] =  decomposeHash(key1, val1)
+            hash[key1] =  decomposeHash(key1, val1)
         end
+        return hash
 
     end
 
