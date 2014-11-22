@@ -29,7 +29,7 @@ class Elastic
             pp connect().indices.stats()
         end
         if nodes
-            pp connect().cluster.get_settings()
+            pp connect().nodes.info()
         end
     end
 
@@ -52,7 +52,19 @@ class Elastic
                 }
             }
         else
-            puts connect().search query
+            puts connect().search body: query
+        end
+    end
+
+    def mode(bulk)
+        if bulk
+            client().cluster.put_settings body: { 
+                transient: { 'cluster.routing.allocation.disable_allocation' => true } 
+            }
+        else
+            client().cluster.put_settings body: { 
+                transient: { 'cluster.routing.allocation.disable_allocation' => true } 
+            }
         end
     end
 end
