@@ -100,7 +100,7 @@ class Generator
             end
 
             # Tuning Vars and Output
-            if gen_count % 12000 == 0
+            if gen_count % 24000 == 0
                 end_time = Time.now
 
                 change = gen_count - last_gen_count

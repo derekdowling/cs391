@@ -38,7 +38,6 @@ class Elastic
     # Use this to bulk load data into ES
     def bulk_load(objs)
         # Upload the array of objects we received
-        puts "loading into es"
         connect().bulk body: objs
     end
 
