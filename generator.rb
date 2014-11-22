@@ -104,6 +104,7 @@ class Generator
                 end_time = Time.now
 
                 change = gen_count - last_gen_count
+                last_gen_count = gen_count
                 exec_time = end_time - start_time
                 exec_ratio = change / exec_time
                 gph = exec_ratio * dgh
