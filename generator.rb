@@ -13,6 +13,9 @@ class Generator
         @country = [ "CA", "USA", "MEX", "UK", "FR", "GER", "DL", "GRC", "ESP" ]
         @email = [ "123@gmail.com", "sweetdood@yahoo.com", "edm@msn.ca", "llcoolj@gmail.com", "wasabi@gov.ab.ca" ]
         @business = [ "SuperHoldings LTD", "Walmart", "Superstore", "Italian Centre", "Best Buy", "Future Shop", "Sears", "Zellers" ]
+        @city = [ "Edmonton", "London", "Paris", "Munich", "Athens", "Barcelona", "Mexico City", "New York", "Calgary", "Austin" ]
+        @ip = [ "123.673.683.23", "123.379.231.547", "234.732.134.564", "234.437.243.12", "123.675.234.785", "234.547.321.673", "235.458.234.83" ]
+        @rand = Random.new(Random.new_seed)
     end
 
     def setDriver(driver)
@@ -80,9 +83,10 @@ class Generator
             puts "Next:#{bulk_max} - Current:#{gen_count}/#{count}"
             start_time = Time.now
 
+            # RubyProf.start
+
             while gen_count < count && bulk_count < bulk_max do
 
-                # RubyProf.start
                 #generate random inputs based on keys/values(types) provided from
                 #manifest
                 data_hash = {}
@@ -90,16 +94,17 @@ class Generator
                     data_hash[key] = decomposeHash(key, val)
                 end
 
-                # result = RubyProf.stop
-                # printer = RubyProf::FlatPrinter.new(result)
-                # printer.print(STDOUT)
-
+                
                 # Add an element to the array specifying we want to index, then add the object to index.
                 obj_arr.push({ index: { _index: 'customer', _type: 'payments'} },{ data: data_hash })
 
                 gen_count += 1
                 bulk_count += 1
             end
+            
+            # result = RubyProf.stop
+            # printer = RubyProf::FlatPrinter.new(result)
+            # printer.print(STDOUT)
 
             # upload all the documents we generated in bulk
             if @driver.is_a?(Elastic)
@@ -139,14 +144,13 @@ class Generator
     # Generates: float, int, string, address, name, city
     def getRandom(value_type)
         catch (:wrong_type) do
-            my_prng = Random.new(Random.new_seed)
             if value_type == 'float'
                 # Takes any float between 0 and 10,000.00...
                 # Rounds to 2 decimal places
-                return my_prng.rand(10000.0).round(2)
+                return @rand.rand(10000.0).round(2)
             elsif value_type == 'int'
                 # Int between 0 and 100,000
-                return my_prng.rand(100000)
+                return @rand.rand(100000)
             elsif value_type == 'string'
                 # String of 20 random letters
                 return ('a'..'z').to_a.shuffle[0,20].join
@@ -154,29 +158,29 @@ class Generator
                 # Int between 0 and 30,000
                 # Want to keep this number fairly small so we
                 # have more interesting queries
-                return my_prng.rand(30000)
+                return @rand.rand(30000)
             elsif value_type == 'id'
-                return my_prng.rand(100000)
+                return @rand.rand(100000)
             elsif value_type == 'address'
-                return my_prng.rand(99999)
+                return @rand.rand(99999)
             elsif value_type == 'name'
-                return @name[my_prng.rand(@name.length - 1)]
+                return @name[@rand.rand(@name.length - 1)]
             elsif value_type == 'city'
-                return Faker::Address.city
+                return @city[@rand.rand(@city.length - 1)]
             elsif value_type == 'phone_num'
-                return my_prng.rand(9999999999)
+                return @rand.rand(9999999999)
             elsif value_type == 'email'
-                return @email[my_prng.rand(@email.length - 1)]
+                return @email[@rand.rand(@email.length - 1)]
             elsif value_type == 'country'
-                return @country[my_prng.rand(@country.length - 1)]
+                return @country[@rand.rand(@country.length - 1)]
             elsif value_type == 'ip'
-                return Faker::Internet.ip_v4_address
+                return @ip[@rand.rand(@ip.length - 1)]
             elsif value_type == 'latitude'
                 return Faker::Address.latitude
             elsif value_type == 'longitude'
                 return Faker::Address.longitude
             elsif value_type == 'zip'
-                return my_prng.rand(99999)
+                return @rand.rand(99999)
             elsif value_type == 'credit_card_num'
                 return Faker::Business.credit_card_number
             elsif value_type == 'credit_card_type'
@@ -185,7 +189,7 @@ class Generator
             elsif value_type == 'credit_card_expiry_date'
                 return Faker::Business.credit_card_expiry_date
             elsif value_type == 'company'
-                return @business[my_prng.rand(@business.length - 1)]
+                return @business[@rand.rand(@business.length - 1)]
             elsif value_type == 'ein'
                 # Employee ID
                 return Faker::Company.ein
@@ -198,13 +202,13 @@ class Generator
                 return Faker::Name.title
             elsif value_type == 'time'
                 # Uses 24 hour time and uses format hh:mm:ss
-                hour = my_prng.rand(24).to_s
-                min = my_prng.rand(59)
+                hour = @rand.rand(24).to_s
+                min = @rand.rand(59)
                 if (min < 10)
                     min = min.to_s
                     min = "0"+min
                 end
-                sec = my_prng.rand(59)
+                sec = @rand.rand(59)
                 if (sec < 10)
                     sec = sec.to_s
                     sec = "0"+sec
