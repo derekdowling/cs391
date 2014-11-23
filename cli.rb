@@ -68,7 +68,7 @@ class CLI < Thor
     desc "search", "Find data in elastic search"
     option :cluster, :type => :boolean, :aliases => :c, :desc => "Perform query against the cluster"
     option :benchmark, :type => :boolean, :aliases => :b, :desc => "Benchmarks query while performing it"
-    def query(json)
+    def search(json)
         elastic = Elastic.new
         if options[:cluster]
             elastic.useCluster()
