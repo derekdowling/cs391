@@ -101,6 +101,8 @@ class Generator
                 @driver.bulk_load(obj)
             end
 
+            pp obj
+
             # Tuning Vars and Output
             if gen_count % 24000 == 0 || gen_count == count then
                 end_time = Time.now
@@ -140,11 +142,11 @@ class Generator
     # Given the type of data needed, generates random data
     # Generates: float, int, string, address, name, city
     def getRandom(value_type)
-        if value_type == 'float'
+        if value_type == :float
             # Takes any float between 0 and 10,000.00...
             # Rounds to 2 decimal places
             return @rand.rand(10000.0).round(2)
-        elsif value_type == "int"
+        elsif value_type == :int
             return @rand.rand(100000)
         elsif value_type == :hash
             return @rand.rand(999999999999)
@@ -192,6 +194,8 @@ class Generator
             return @job[@rand.rand(@job.length - 1)]
         elsif value_type == :time
             return Time.new - @rand.rand(3600)
+        else
+            puts "WTF: #{value_type}"
         end
     end
 end

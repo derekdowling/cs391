@@ -18,16 +18,14 @@
         "dest_port_code": "int"
     },
     "source_account": {
-        "map": {
-            "source_address": "address",
-            "source_city": "city",
-            "source_country": "country",
-            "source_hash_160": "hash",
-            "account_id": "id",
-            "branch_num": "small_int",
-            "bank_id": "int",
-            "account_type": "small_int"
-        }
+        "source_address": "address",
+        "source_city": "city",
+        "source_country": "country",
+        "source_hash_160": "hash",
+        "account_id": "id",
+        "branch_num": "small_int",
+        "bank_id": "int",
+        "account_type": "small_int"
     },
     "source_account_info": {
         "account_holder": "name",
@@ -45,16 +43,14 @@
         "credit_card_expiry_date": "credit_card_expiry_date"
     },
     "dest_account": {
-        "map": {
-            "dest_address": "address",
-            "dest_city": "city",
-            "dest_country": "country",
-            "dest_hash_160": "int",
-            "account_id": "id",
-            "branch_num": "small_int",
-            "bank_id": "int",
-            "account_type": "int"
-        }
+        "dest_address": "address",
+        "dest_city": "city",
+        "dest_country": "country",
+        "dest_hash_160": "int",
+        "account_id": "id",
+        "branch_num": "small_int",
+        "bank_id": "int",
+        "account_type": "int"
     },
     "dest_account_info": {
         "account_holder": "name",
@@ -71,22 +67,14 @@
     "confirmation_count": "int",
     "size_b": "int",
     "relay_ip": "ip",
-    "input_hash": {
-        "array": "hash"
-    },
-    "output_hash": {
-        "array": "hash"
-    },
-    "input_signatures": {
-        "array": {
-            "map": {
-                "account_holder_id": "id",
-                "name": "name",
-                "public_key": "hash",
-                "signature_time": "time",
-                "relations_code": "id"
-            }
-        }
+    "input_hash": "hash",
+    "output_hash": "hash",
+    "input_signature": {
+        "account_holder_id": "id",
+        "name": "name",
+        "public_key": "hash",
+        "signature_time": "time",
+        "relations_code": "id"
     },
     "physical_source": {
         "ipv4": "ip",
