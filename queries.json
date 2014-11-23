@@ -1,0 +1,63 @@
+// #1) Query through the database and returns matches where 'fees' are both greater then or equal to 1000,
+// and less then 4000. Groups by country and orders by alphabetically.
+// #2) Find all unique source accounts located in the USA and order by company in descending order.
+{
+    [
+    {
+        "size" : 0,
+            "range" : {
+                "fees" : {
+                    "gte" : 1000,
+                    "lt" : 4000,
+                }
+            },
+            "aggs" : {
+                "group_by_country" : {
+                    "terms" : {
+                        "field" : "country"
+                    }
+                }	
+            }
+    },
+
+
+    {
+        "size": 0,
+        "query": {
+            "match": {
+                "source_account": { "country": "USA"}
+            },
+        },
+        "aggs": {
+            "group_by_company": {
+                "terms": {
+                    "field": {"physical_source": { "business_name"}}
+                }
+            },
+            "aggs": {
+                "distinct_account_id": {
+                    "cardinality": {
+                        "field" : {"source_account": {"account_id":"id"}}
+                    }
+                }
+            }
+        }
+    },
+
+
+    {
+        //query #3
+    },
+
+
+    {
+        //query #4
+    },
+
+
+    {
+        //query #5
+    }
+    ]
+}
+
