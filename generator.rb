@@ -101,8 +101,6 @@ class Generator
                 @driver.bulk_load(obj)
             end
 
-            pp obj
-
             # Tuning Vars and Output
             if gen_count % 24000 == 0 || gen_count == count then
                 end_time = Time.now
