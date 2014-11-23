@@ -85,7 +85,7 @@ class Generator
                 #manifest
                 data_hash = {}
                 @manifest.each do |key, val|
-                    data_hash[key] = decomposeHash(key, val)
+                    data_hash[key] = decomposeHash(val)
                 end
 
                 # Add an element to the array specifying we want to index, then add the object to index.
@@ -123,14 +123,15 @@ class Generator
     # since our hash may contain nested hashes
     def decomposeHash(key, val)
         # If value is NOT a hash, change the value to random data appropriate to its type
+
         if !val.is_a?(Hash)
-            return getRandom(val)
+            return getRandom(val.to_sym)
         end
 
         # Decompose the hash into smaller components
         hash = {}
-        val.each do |key1, val1|
-            hash[key1] =  decomposeHash(key1, val1)
+        val.each do |sub_key, sub_val|
+            hash[sub_key] = decomposeHash(sub_val)
         end
         return hash
 
@@ -143,7 +144,7 @@ class Generator
             # Takes any float between 0 and 10,000.00...
             # Rounds to 2 decimal places
             return @rand.rand(10000.0).round(2)
-        elsif value_type == :int
+        elsif value_type == "int"
             return @rand.rand(100000)
         elsif value_type == :hash
             return @rand.rand(999999999999)
@@ -184,7 +185,9 @@ class Generator
             return @business[@rand.rand(@business.length - 1)]
         elsif value_type == :date
             # Random date in the past 90 days
-            return Date.today - @rand.rand(365)
+            # 2014-Month-Day
+            date = Date.today - @rand.rand(365)
+            return date.to_s
         elsif value_type == :job_title
             return @job[@rand.rand(@job.length - 1)]
         elsif value_type == :time

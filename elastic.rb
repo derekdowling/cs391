@@ -43,17 +43,19 @@ class Elastic
 
     def search(query, benchmark = false)
         if benchmark
-            puts connect().benchmark body: {
+            puts connect().benchmark index: 'customer', body: {
                 name: "query_benchmark",
-                competitors: {
-                    name: "query",
-                    requests: [
-                        { query: query }
-                    ]
-                }
+                competitors: [
+                    {
+                        name: "query",
+                        requests: [
+                            { query: query }
+                        ]
+                    }
+                ]
             }
         else
-            connect().search body: query
+            puts connect().search index: 'customer', q: query
         end
     end
 
