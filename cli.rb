@@ -3,6 +3,7 @@
 require 'rubygems'
 require 'bundler/setup'
 require "thor"
+require "json"
 
 require_relative "generator"
 require_relative "elastic"
@@ -63,28 +64,28 @@ class CLI < Thor
     long_desc <<-END
         Query docs: http://www.rubydoc.info/gems/elasticsearch-api/Elasticsearch/API/Actions#search-instance_method
         Cluster query example:
-            query '{"physical_source":{"country":"USA"}}' -c
+            search '{"physical_source":{"country":"USA"}}' -c
     END
-    desc "search", "Find data in elastic search"
+    desc "search <rel_json_file>", "Find data in elastic search"
     option :cluster, :type => :boolean, :aliases => :c, :desc => "Perform query against the cluster"
     option :benchmark, :type => :boolean, :aliases => :b, :desc => "Benchmarks query while performing it"
-    options :file, :type => :boolean, :aliases => :f, :desc => "Perform queries based on a JSON file"
-    def search(json = '{}')
+    def search(json_file)
 
+        queries = {}
         elastic = Elastic.new
         if options[:cluster]
             elastic.useCluster()
         end
 
-        if options[:file]
-            file = File.read(options[:file])
-            json = JSON.parse(file)
-        end
+        puts json_file
+        file = File.read(json_file)
+        queries = JSON.parse(file)
+        puts queries
 
         if options[:benchmark]
-            elastic.search(query, true)
+            elastic.search(queries, true)
         else
-            elastic.search(query)
+            elastic.search(queries)
         end
     end
 
