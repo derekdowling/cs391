@@ -1,0 +1,46 @@
+
+
+
+
+// Query through the database and returns matches where 'fees' are both greater then or equal to 1000, and less then 4000. Groups by country and orders by desc
+{
+	[
+		{
+			"size" : 0,
+			"range" : {
+				"fees" : {
+					"gte" : 1000,
+					"lt" : 4000,
+				}
+			},
+			"aggs" : {
+				"group_by_country" : {
+					"terms" : {
+						"field" : "country"
+					}
+				}	
+			}
+		},
+
+
+		{
+			//query #2 
+		},
+
+
+		{
+			//query #3
+		},
+
+
+		{
+			//query #4
+		},
+
+
+		{
+			//query #5
+		}
+	]
+}
+
