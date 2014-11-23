@@ -6,7 +6,7 @@ require 'time'
 
 class Generator
 
-    # the output driver to use
+    # Set which driver to use during random data generation and specifies lists of values that random data can be chosen from 
     def initialize()
         @driver = IO.new(STDOUT.fileno)
         @manifest = {}
@@ -21,12 +21,12 @@ class Generator
         @job = [ "CEO", "CFO", "CIO", "CTO", "Department Manager", "Employee", "Intern", "VP", "Board Member" ]
     end
 
+    # Set a specific driver to use
     def setDriver(driver)
         @driver = driver
     end
 
-    # Call this to generate json output
-    # Has some default values for parameters, can pass in own values
+    # Call this function to generate random data. By default 1 document will be generated.
     def generate(documents = 1)
         puts "Starting data generation"
 
@@ -45,6 +45,7 @@ class Generator
         @manifest = JSON.parse(file)
     end
 
+    # Create a deep copy of the hash 
     def copyHash(hash)
         return Marshal.load(Marshal.dump(hash))
     end
@@ -115,22 +116,18 @@ class Generator
             end
 
         end
-
-        # result = RubyProf.stop
-        # printer = RubyProf::FlatPrinter.new(result)
-        # printer.print(STDOUT)
-
         puts "Finished data generation!"
     end
 
-    # Fills out each element of the hash with random data.
+    # Fills out each element of the hash with random data recursively
+    # since our hash may contain nested hashes
     def decomposeHash(key, val)
-        # If value is NOT a hash, we are done!
+        # If value is NOT a hash, change the value to random data appropriate to its type
         if !val.is_a?(Hash)
             return getRandom(val)
         end
 
-        # Decompose the hash
+        # Decompose the hash into smaller components
         hash = {}
         val.each do |key1, val1|
             hash[key1] =  decomposeHash(key1, val1)
