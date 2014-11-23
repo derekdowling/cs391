@@ -121,7 +121,7 @@ class Generator
 
     # Fills out each element of the hash with random data recursively
     # since our hash may contain nested hashes
-    def decomposeHash(key, val)
+    def decomposeHash(val)
         # If value is NOT a hash, change the value to random data appropriate to its type
 
         if !val.is_a?(Hash)
