@@ -43,7 +43,7 @@ class Elastic
 
     def search(query, benchmark = false)
         if benchmark
-            pp connect().benchmark index: 'customer', body: {
+            pp connect().benchmark index: 'transactions', body: {
                 name: "query_benchmark",
                 competitors: [
                     {
@@ -55,7 +55,7 @@ class Elastic
                 ]
             }
         else
-            pp connect().search index: 'customer', q: query
+            pp connect().search index: 'transactions', q: query
         end
     end
 
