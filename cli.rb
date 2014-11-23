@@ -62,21 +62,19 @@ class CLI < Thor
 
     long_desc <<-END
         Query docs: http://www.rubydoc.info/gems/elasticsearch-api/Elasticsearch/API/Actions#search-instance_method
-
-        Example:
-
-            query _customer {"from":0,"size":10,"fields":["dest_account"]}
+        Cluster query example:
+            query '{"physical_source":{"country":"USA"}}' -c
     END
-    desc "query <index> <json>", "Runs an elastic search query"
+    desc "search", "Find data in elastic search"
     option :cluster, :type => :boolean, :aliases => :c, :desc => "Perform query against the cluster"
     option :benchmark, :type => :boolean, :aliases => :b, :desc => "Benchmarks query while performing it"
-    def query(index, json)
+    def query(json)
         elastic = Elastic.new
         if options[:cluster]
             elastic.useCluster()
         end
 
-        query = { :index => index, :body => JSON.parse(json) }
+        query = JSON.parse(json)
 
         if options[:benchmark]
             elastic.search(query, true)
