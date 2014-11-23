@@ -3,12 +3,14 @@
 // #2) Find all unique source accounts located in the USA and order by company in descending order.
 {
     [
-    {
-        "size" : 0,
-            "range" : {
-                "fees" : {
-                    "gte" : 1000,
-                    "lt" : 4000,
+        {
+            "size" : 0,
+            "query": {
+                "range" : {
+                    "fees" : {
+                        "gte" : 1000,
+                        "lt" : 5000
+                    }
                 }
             },
             "aggs" : {
@@ -16,9 +18,9 @@
                     "terms" : {
                         "field" : "country"
                     }
-                }	
+                }
             }
-    },
+        },
 
 
     {
@@ -60,4 +62,3 @@
     }
     ]
 }
-
