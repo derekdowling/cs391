@@ -27,7 +27,7 @@ class Elastic
     def testConnection(stats = false, config = false)
         pp connect().cluster.health
         # pp connect().cluster.state
-        pp connect().cluster.get_settings
+        # pp connect().cluster.get_settings
 
         if stats
             pp connect().indices.stats index: 'transactions'

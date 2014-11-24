@@ -20,6 +20,7 @@ class Generator
         @cc = [ "Visa", "Mastercard", "American Express", "Maestro", "Discovery", "Diner's Club" ]
         @job = [ "CEO", "CFO", "CIO", "CTO", "Department Manager", "Employee", "Intern", "VP", "Board Member" ]
         @uuid = @rand.rand(10000)
+        @bulk_doc_slug = 4000
     end
 
     # Set a specific driver to use
@@ -57,10 +58,8 @@ class Generator
         puts "Starting generation"
 
         # so we don't overallocate and break our array on test generations
-        if count * 2 > 3000
-            bulk_max = 6000
-        elsif
-            bulk_max = count * 2
+        if @bulk_doc_slug > count
+            @bulk_doc_slug = count
         end
 
         # average size of our output files
@@ -77,10 +76,10 @@ class Generator
 
             # Create an array to hold all of our generated documents for each
             # bulk upload
-            obj = Array.new(bulk_max)
+            obj = Array.new(@bulk_doc_slug * 2)
             bulk_count = 0
 
-            while gen_count < count && bulk_count < bulk_max do
+            while gen_count < count && bulk_count < @bulk_doc_slug * 2 do
 
                 #generate random inputs based on keys/values(types) provided from
                 #manifest
@@ -104,13 +103,13 @@ class Generator
                 if @driver.is_a?(Elastic)
                     @driver.bulk_load(obj)
                 end
-            rescue StandardErrort => error
+            rescue StandardError => error
                 puts error
-                gen_count = gen_count - (bulk_max / 2)
+                gen_count = gen_count - @bulk_doc_slug
             end
 
             # Profiling, print every 10 cycles to keep concise
-            if gen_count % bulk_max * 10 == 0 || gen_count == count then
+            if gen_count % @bulk_doc_slug * 10 == 0 || gen_count == count then
                 end_time = Time.now
 
                 exec_time = end_time - start_time
@@ -118,7 +117,7 @@ class Generator
                 gph = exec_ratio * dgh
                 round_time = period_start - end_time
 
-                puts "#{@uuid}: T-#{round_time} R-#{exec_ratio} Gb/h-#{gph}"
+                puts "#{@uuid}: T-#{round_time} R-#{exec_ratio} GB/h-#{gph}"
                 period_start = Time.now
             end
 
