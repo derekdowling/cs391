@@ -19,6 +19,7 @@ class Generator
         @rand = Random.new(Random.new_seed)
         @cc = [ "Visa", "Mastercard", "American Express", "Maestro", "Discovery", "Diner's Club" ]
         @job = [ "CEO", "CFO", "CIO", "CTO", "Department Manager", "Employee", "Intern", "VP", "Board Member" ]
+        @uuid = @rand.rand(10000)
     end
 
     # Set a specific driver to use
@@ -108,15 +109,16 @@ class Generator
                 gen_count = gen_count - (bulk_max / 2)
             end
 
-            # Profiling
-            if gen_count % bulk_max * 8 == 0 || gen_count == count then
+            # Profiling, print every 10 cycles to keep concise
+            if gen_count % bulk_max * 10 == 0 || gen_count == count then
                 end_time = Time.now
 
                 exec_time = end_time - start_time
                 exec_ratio = gen_count / exec_time
                 gph = exec_ratio * dgh
+                round_time = period_start - end_time
 
-                puts "#T:#{period_start - end_time} #R:#{exec_ratio} #G/H:#{gph}"
+                puts "##{@uuid}: T-#{round_time} R-#{exec_ratio} Gb/h-#{gph}"
                 period_start = Time.now
             end
 
