@@ -118,7 +118,7 @@ class Generator
                 gph = exec_ratio * dgh
                 round_time = period_start - end_time
 
-                puts "##{@uuid}: T-#{round_time} R-#{exec_ratio} Gb/h-#{gph}"
+                puts "#{@uuid}: T-#{round_time} R-#{exec_ratio} Gb/h-#{gph}"
                 period_start = Time.now
             end
 
