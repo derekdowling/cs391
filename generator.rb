@@ -104,7 +104,7 @@ class Generator
                 if @driver.is_a?(Elastic)
                     @driver.bulk_load(obj)
                 end
-            rescue Exception => error
+            rescue StandardErrort => error
                 puts error
                 gen_count = gen_count - (bulk_max / 2)
             end
