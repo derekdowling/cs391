@@ -98,9 +98,13 @@ class Generator
                 bulk_count += 2
             end
 
-            # upload all the documents we generated in bulk
-            if @driver.is_a?(Elastic)
-                @driver.bulk_load(obj)
+            begin
+                # upload all the documents we generated in bulk
+                if @driver.is_a?(Elastic)
+                    @driver.bulk_load(obj)
+                end
+            rescue Exception => error
+                puts error
             end
 
             # Profiling
