@@ -105,6 +105,7 @@ class Generator
                 end
             rescue Exception => error
                 puts error
+                gen_count = gen_count - (bulk_max / 2)
             end
 
             # Profiling
