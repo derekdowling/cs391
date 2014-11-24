@@ -30,12 +30,10 @@ class Elastic
         pp connect().cluster.get_settings
 
         if stats
-            # pp connect().indices.stats index: 'transactions'
-            # pp connect().indices.stats index: 'customer'
+            pp connect().indices.stats index: 'transactions'
         end
         if config
-            # pp connect().indices.get_settings index: 'transactions'
-            pp connect().indices.get_settings
+            pp connect().indices.get_settings index: 'transactions'
         end
     end
 

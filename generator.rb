@@ -55,23 +55,23 @@ class Generator
 
         puts "Starting generation"
 
-        # counters
-        gen_count = 0
-
+        # so we don't overallocate and break our array on test generations
         if count * 2 > 3000
-            bulk_max = 10000
+            bulk_max = 6000
         elsif
             bulk_max = count * 2
         end
 
+        # average size of our output files
         doc_size = 3000.0
+
+        # Ratio: Gigs/Hour
         dgh = doc_size * 3600.0 / 1000000000.0
 
         # tuning variables
-        last_gen_count = 0
-        exec_ratio = 0.0
         start_time = Time.now
-        # RubyProf.start
+        period_start = Time.now
+        gen_count = 0
         while gen_count < count do
 
             # Create an array to hold all of our generated documents for each
@@ -88,10 +88,12 @@ class Generator
                     data_hash[key] = decomposeHash(val)
                 end
 
-                # Add an element to the array specifying we want to index, then add the object to index.
+                # Add an element to the array specifying we want to index, then add
+                # the object to index.
                 obj[bulk_count] = {index: { _index: :transactions, _type: :item}}
                 obj[bulk_count + 1] = {data: data_hash}
 
+                # increment our counters
                 gen_count += 1
                 bulk_count += 2
             end
@@ -101,18 +103,16 @@ class Generator
                 @driver.bulk_load(obj)
             end
 
-            # Tuning Vars and Output
-            if gen_count % 25000 == 0 || gen_count == count then
+            # Profiling
+            if gen_count % bulk_max * 8 == 0 || gen_count == count then
                 end_time = Time.now
 
-                change = gen_count - last_gen_count
-                last_gen_count = gen_count
                 exec_time = end_time - start_time
-                exec_ratio = change / exec_time
+                exec_ratio = gen_count / exec_time
                 gph = exec_ratio * dgh
 
-                puts "#T:#{exec_time} #C:#{change} #R:#{exec_ratio} #G/H:#{gph}"
-                start_time = Time.now
+                puts "#T:#{period_start - end_time} #R:#{exec_ratio} #G/H:#{gph}"
+                period_start = Time.now
             end
 
         end
