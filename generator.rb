@@ -53,13 +53,13 @@ class Generator
     end
 
     # Create objects until count is reached
-    def createData(buffer, count)
+    def createData(buffer, total_docs)
 
-        puts "Starting generation"
+        puts "Starting generation for: #{@uuid}"
 
         # so we don't overallocate and break our array on test generations
-        if @bulk_doc_slug > count
-            @bulk_doc_slug = count
+        if @bulk_doc_slug > total_docs
+            @bulk_doc_slug = total_docs
         end
 
         # average size of our output files
@@ -70,16 +70,16 @@ class Generator
 
         # tuning variables
         start_time = Time.now
-        period_start = Time.now
-        gen_count = 0
-        while gen_count < count do
+        rounds = 0
+        doc_count = 0
+        while doc_count < total_docs do
 
             # Create an array to hold all of our generated documents for each
             # bulk upload
             obj = Array.new(@bulk_doc_slug * 2)
             bulk_count = 0
 
-            while gen_count < count && bulk_count < @bulk_doc_slug * 2 do
+            while doc_count < total_docs && bulk_count < @bulk_doc_slug * 2 do
 
                 #generate random inputs based on keys/values(types) provided from
                 #manifest
@@ -94,7 +94,7 @@ class Generator
                 obj[bulk_count + 1] = {data: data_hash}
 
                 # increment our counters
-                gen_count += 1
+                doc_count += 1
                 bulk_count += 2
             end
 
@@ -105,20 +105,20 @@ class Generator
                 end
             rescue StandardError => error
                 puts error
-                gen_count = gen_count - @bulk_doc_slug
+                doc_count = doc_count - @bulk_doc_slug
             end
 
             # Profiling, print every 10 cycles to keep concise
-            if gen_count % @bulk_doc_slug * 10 == 0 || gen_count == count then
+            if doc_count % @bulk_doc_slug * 10 == 0 || doc_count == total_docs then
                 end_time = Time.now
+                rounds += 10
 
                 exec_time = end_time - start_time
-                exec_ratio = gen_count / exec_time
+                avg_time = exec_time.to_f / rounds
+                exec_ratio = doc_count / exec_time
                 gph = exec_ratio * dgh
-                round_time = period_start - end_time
 
-                puts "#{@uuid}: T-#{round_time} R-#{exec_ratio} GB/h-#{gph}"
-                period_start = Time.now
+                puts "#{@uuid}: T-#{avg_time} R-#{exec_ratio} GB/h-#{gph}"
             end
 
         end
