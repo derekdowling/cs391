@@ -24,14 +24,18 @@ class Elastic
         return @client
     end
 
-    def testConnection(stats = false, nodes = false)
+    def testConnection(stats = false, config = false)
         pp connect().cluster.health
+        # pp connect().cluster.state
+        pp connect().cluster.get_settings
 
         if stats
-            pp connect().indices.stats()
+            # pp connect().indices.stats index: 'transactions'
+            # pp connect().indices.stats index: 'customer'
         end
-        if nodes
-            pp connect().nodes.info()
+        if config
+            # pp connect().indices.get_settings index: 'transactions'
+            pp connect().indices.get_settings
         end
     end
 

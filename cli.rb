@@ -90,18 +90,14 @@ class CLI < Thor
     end
 
     desc "ping", "Tests our elastic search connection"
-    option :cluster, :type => :boolean, :aliases => :c, :desc => "Perform actions against the cluster"
-    option :stats, :type => :boolean, :aliases => :s, :desc => "Also prints cluster stats"
-    option :nodes, :type => :boolean, :aliases => :n, :desc => "Also prints node settings"
+    option :stats, :type => :boolean, :aliases => :s, :desc => "Also indice stats"
+    option :config, :type => :boolean, :aliases => :c, :desc => "Include indice config"
     def ping()
 
         elastic = Elastic.new
+        elastic.useCluster()
 
-        if options[:cluster]
-            elastic.useCluster()
-        end
-
-        elastic.testConnection(options[:stats],options[:nodes])
+        elastic.testConnection(options[:stats],options[:config])
     end
 
     desc "mode", "Changes various cluster settings"

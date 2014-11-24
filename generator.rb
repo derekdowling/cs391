@@ -59,7 +59,7 @@ class Generator
         gen_count = 0
 
         if count * 2 > 3000
-            bulk_max = 3000
+            bulk_max = 10000
         elsif
             bulk_max = count * 2
         end
@@ -102,7 +102,7 @@ class Generator
             end
 
             # Tuning Vars and Output
-            if gen_count % 24000 == 0 || gen_count == count then
+            if gen_count % 25000 == 0 || gen_count == count then
                 end_time = Time.now
 
                 change = gen_count - last_gen_count
