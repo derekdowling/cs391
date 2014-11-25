@@ -49,32 +49,21 @@ Using the create data script.
 Create data generates the number of documents specified.
 Examples:
 Create 5 documents:
-```ruby 
+```ruby
 ruby cli.rb gen 5
 ```
 
-To use the elastic search driver simply use [--driver]
-To profile the command use [--profile]]
+To generate documents and put them on the cluster: [-cluster] or [-c]
 Example:
-Create 5 documents and use a loader:
+Create 5 documents and put them on the cluster:
 ```ruby
-ruby cli.rb gen --driver gen 5
+ruby cli.rb gen -c  5
 ```
-Types of Data that can be generated:
-float: any float between 0 and 10,000.00
-int: any integer between 0 and 100,000
-small_int: any integer between 0 and 100
-string: 20 random character
-ip: IPv4 address
-credit_card_type: (Ex) visa
-ein: employee ID
-duns_num: duns number, a number given to a company
-id: a 13 digit id number
-
-Self explanatory types:
-address, name, city, phone_num, email, country
-latitude, longitude, zip, credit_card_num,
-credit_card_expiry_date, company, date, time, job_title
+To generate documents and put them on your local cluster: [-hardcore] or [-h]
+Create 5 documents on localhost:
+```ruby
+ruby cli.rb gen -h 5
+```
 
 Profiling Queries
 ----------------------------------------------------------------------------
