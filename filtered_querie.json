@@ -1,0 +1,140 @@
+// #1) Query through the database and returns matches where 'fees' are both greater then or equal to 1000,
+// and less then 5000. Groups by country and orders by alphabetically.
+// #2) Find all *unique* source accounts located in the USA and order by account type in ascending order.
+// #3) For all transactions numbered between 500 and 10000, find the largest input amount
+// #4) Find all transactions using a priority code less or equal to 10, group by priority code, and take the average
+// input amount
+// #5) Find all transactions coming out of Paris, FR and going to New York, USA that have an input amount of less
+// than $20,000, are from a Visa, and from the business Sears. Do not display results from the branch
+// number 123, 456, 789, or 000.
+
+{
+    [
+        {
+            "size" : 0,
+            "query": {
+                "filtered": {
+                    "filter": {
+                        "range" : {
+                            "fees" : {
+                                "gte" : 1000,
+                                "lt" : 5000
+                            }
+                        }
+                    }
+                }
+            },
+                        "aggs" : {
+                            "group_by_country" : {
+                                "terms" : {
+                                    "field" : "country",
+                                    "order" : { "_term" : "asc" },
+                                    "size" : 0
+                                }
+                            }
+                        }
+        },
+
+        {
+            "size": 0,
+            "query": {
+                "match": {
+                    "source_country": "USA"
+                }
+            },
+            "aggs" : {
+                "group_by_type" : {
+                    "terms" : {
+                        "field" : "account_type",
+                        "order" : {"_count": "asc" },
+                        "size": 0
+                    },
+                    "aggs": {
+                        "distinct_account_id": {
+                            "cardinality": {
+                                "field" : "account_id"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+
+        {
+            "size" : 0,
+            "query" : {
+                "filtered": {
+                    "filter": {
+                        "range" : {
+                            "transaction_num" : {
+                                "gte" : 500,
+                                "lte" : 10000
+                            }
+                        }
+                    }
+                }
+            },
+                        "aggs" : {
+                            "max_input" : {
+                                "max" : { "field" : "input_amount" }}
+                            }
+        },
+
+
+        {
+            "size" : 0,
+            "query" : {
+                "filtered": {
+                    "filter": {
+                        "range" : {
+                            "priority_code" : {
+                                "lte" : 10
+                            }
+                        }
+                    }
+                }
+            },
+            "aggs" : {
+                "group_by_type" : {
+                    "terms" : {
+                        "field" : "priority_code",
+                        "order" : {"_count": "asc"   },
+                        "size" : 0
+                    },
+                    "aggs": {
+                        "avg_input" : {
+                            "avg" : {
+                                "field" : "input_amount"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+
+    {
+        "size": 0,
+        "query": {
+            "bool": {
+                "must": [
+                    {"match": { "credit_card_type": "Visa"}},
+                    {"match": { "dest_country": "USA"}},
+                    {"match": { "dest_city": "New York" }},
+                    {"range": { "input_amount": { "lt": 20000}}},
+                    {"match": { "source_country": "FR"}},
+                    {"match": { "source_city": "Paris"}},
+                    {"match": { "business_name": "Sears"}}
+                ],
+                "must_not": [
+                    {"match": { "branch_num": "123"}},
+                    {"match": { "branch_num": "456"}},
+                    {"match": { "branch_num": "789"}},
+                    {"match": { "branch_num": "000"}}
+                ]
+            }
+        }
+    }
+    ]
+}
