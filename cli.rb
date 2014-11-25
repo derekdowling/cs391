@@ -77,7 +77,6 @@ class CLI < Thor
             elastic.useCluster()
         end
 
-        puts json_file
         file = File.read(json_file)
         queries = JSON.parse(file)
         puts queries

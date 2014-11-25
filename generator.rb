@@ -43,7 +43,7 @@ class Generator
     def parseManifest()
         puts "Parsing manifest file"
 
-        file = File.read('manifest.json')
+        file = File.read('flattened_manifest.json')
         @manifest = JSON.parse(file)
     end
 
