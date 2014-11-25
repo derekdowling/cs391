@@ -23,7 +23,7 @@
             "aggs" : {
                 "group_by_country" : {
                     "terms" : {
-                        "field" : "country",
+                        "field" : "source_country",
                         "order" : { "_term" : "asc" },
                         "size" : 0
                     }
@@ -42,14 +42,14 @@
             "aggs" : {
                 "group_by_type" : {
                     "terms" : {
-                        "field" : "account_type",
+                        "field" : "source_account_type",
                         "order" : {"_count": "asc" },
                         "size": 0
                     },
                     "aggs": {
                         "distinct_account_id": {
                             "cardinality": {
-                                "field" : "account_id"
+                                "field" : "source_account_id"
                             }
                         }
                     }
@@ -114,13 +114,13 @@
                     {"range": { "input_amount": { "lt": 20000}}},
                     {"match": { "source_country": "FR"}},
                     {"match": { "source_city": "Paris"}},
-                    {"match": { "business_name": "Sears"}}
+                    {"match": { "phy_source_business_name": "Sears"}}
                 ],
                 "must_not": [
-                    {"match": { "branch_num": "123"}},
-                    {"match": { "branch_num": "456"}},
-                    {"match": { "branch_num": "789"}},
-                    {"match": { "branch_num": "000"}}
+                    {"match": { "source_branch_num": "123"}},
+                    {"match": { "source_branch_num": "456"}},
+                    {"match": { "source_branch_num": "789"}},
+                    {"match": { "source_branch_num": "000"}}
                 ]
             }
         }
