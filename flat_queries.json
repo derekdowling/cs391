@@ -9,7 +9,7 @@
 // number 123, 456, 789, or 000.
 
 {
-    [
+    "queries": [
         {
             "size" : 0,
             "query": {
@@ -30,8 +30,6 @@
                 }
             }
         },
-
-
         {
             "size": 0,
             "query": {
@@ -56,8 +54,6 @@
                 }
             }
         },
-
-
         {
             "size" : 0,
             "query" : {
@@ -73,57 +69,53 @@
                     "max" : { "field" : "input_amount" }}
                 }
         },
-
-
-    {
-        "size" : 0,
-        "query" : {
-            "range" : {
-                "priority_code" : {
-                    "lte" : 10
+        {
+            "size" : 0,
+            "query" : {
+                "range" : {
+                    "priority_code" : {
+                        "lte" : 10
+                    }
                 }
-            }
-        },
-        "aggs" : {
-            "group_by_type" : {
-                "terms" : {
-                    "field" : "priority_code",
-                    "order" : {"_count": "asc"   },
-                    "size" : 0
-                },
-                "aggs": {
-                    "avg_input" : {
-                        "avg" : {
-                            "field" : "input_amount"
+            },
+            "aggs" : {
+                "group_by_type" : {
+                    "terms" : {
+                        "field" : "priority_code",
+                        "order" : {"_count": "asc"   },
+                        "size" : 0
+                    },
+                    "aggs": {
+                        "avg_input" : {
+                            "avg" : {
+                                "field" : "input_amount"
+                            }
                         }
                     }
                 }
             }
-        }
-    },
-
-
-    {
-        "size": 0,
-        "query": {
-            "bool": {
-                "must": [
-                    {"match": { "credit_card_type": "Visa"}},
-                    {"match": { "dest_country": "USA"}},
-                    {"match": { "dest_city": "New York" }},
-                    {"range": { "input_amount": { "lt": 20000}}},
-                    {"match": { "source_country": "FR"}},
-                    {"match": { "source_city": "Paris"}},
-                    {"match": { "phy_source_business_name": "Sears"}}
-                ],
-                "must_not": [
-                    {"match": { "source_branch_num": "123"}},
-                    {"match": { "source_branch_num": "456"}},
-                    {"match": { "source_branch_num": "789"}},
-                    {"match": { "source_branch_num": "000"}}
-                ]
+        },
+        {
+            "size": 0,
+            "query": {
+                "bool": {
+                    "must": [
+                        {"match": { "credit_card_type": "Visa"}},
+                        {"match": { "dest_country": "USA"}},
+                        {"match": { "dest_city": "New York" }},
+                        {"range": { "input_amount": { "lt": 20000}}},
+                        {"match": { "source_country": "FR"}},
+                        {"match": { "source_city": "Paris"}},
+                        {"match": { "phy_source_business_name": "Sears"}}
+                    ],
+                    "must_not": [
+                        {"match": { "source_branch_num": "123"}},
+                        {"match": { "source_branch_num": "456"}},
+                        {"match": { "source_branch_num": "789"}},
+                        {"match": { "source_branch_num": "000"}}
+                    ]
+                }
             }
         }
-    }
     ]
 }

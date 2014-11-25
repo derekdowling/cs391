@@ -30,10 +30,10 @@ class Elastic
         # pp connect().cluster.get_settings
 
         if stats
-            pp connect().indices.stats index: 'transactions'
+            pp connect().indices.stats
         end
         if config
-            pp connect().indices.get_settings index: 'transactions'
+            pp connect().indices.get_settings
         end
     end
 
@@ -43,22 +43,21 @@ class Elastic
         connect().bulk body: objs
     end
 
-    def search(query, benchmark = false)
-        if benchmark
-            pp connect().benchmark index: 'transactions', body: {
-                name: "query_benchmark",
-                competitors: [
-                    {
-                        name: "query",
-                        requests: [
-                            { query: query }
-                        ]
-                    }
-                ]
-            }
-        else
-            pp connect().search index: 'transactions', q: query
+    # Performs a benchmarked search/query in ES
+    def search(index, queries)
+
+        # formatted array of queries
+        competitors = Array.new(queries.length)
+
+        $i = 0;
+        while $i < queries.length do
+            competitors[$i] = { name: "query #{$i}", requests: queries[$i] }
         end
+
+        pp connect().benchmark index: index, body: {
+            name: "query_benchmark",
+            competitors: competitors
+        }
     end
 
     def mode(bulk)

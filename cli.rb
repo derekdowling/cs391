@@ -64,12 +64,12 @@ class CLI < Thor
     long_desc <<-END
         Query docs: http://www.rubydoc.info/gems/elasticsearch-api/Elasticsearch/API/Actions#search-instance_method
         Cluster query example:
-            search '{"physical_source":{"country":"USA"}}' -c
+            search flat_transactions flat_queries.json -c -q 1
     END
-    desc "search <rel_json_file>", "Find data in elastic search"
+    desc "search <index> <rel_json_file>", "Find data in elastic search"
     option :cluster, :type => :boolean, :aliases => :c, :desc => "Perform query against the cluster"
-    option :benchmark, :type => :boolean, :aliases => :b, :desc => "Benchmarks query while performing it"
-    def search(json_file)
+    option :query, :type => :numeric, :aliases => :q, :desc => "Specify a specific index from the list of queries to execute"
+    def search(index, json_file)
 
         queries = {}
         elastic = Elastic.new
@@ -78,14 +78,13 @@ class CLI < Thor
         end
 
         file = File.read(json_file)
-        queries = JSON.parse(file)
-        puts queries
+        queries = JSON.parse(file)["queries"]
 
-        if options[:benchmark]
-            elastic.search(queries, true)
-        else
-            elastic.search(queries)
+        if options[:queries]
+            queries = queries[options[:queries]]
         end
+
+        elastic.search(index, queries)
     end
 
     desc "ping", "Tests our elastic search connection"
