@@ -90,7 +90,7 @@ class Generator
 
                 # Add an element to the array specifying we want to index, then add
                 # the object to index.
-                obj[bulk_count] = {index: { _index: :transactions, _type: :item}}
+                obj[bulk_count] = {index: { _index: :flat_transactions, _type: :item}}
                 obj[bulk_count + 1] = {data: data_hash}
 
                 # increment our counters
