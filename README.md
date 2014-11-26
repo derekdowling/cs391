@@ -5,13 +5,17 @@ Tools for our big data Elastic Search project
 
 Getting Started
 -----------------------------------------------------------------------------
-### Setting up your environment
+### Setting up your generator test environment
 run: "./start-es"
 
 ### To run scripts:
 
 Use the CLI tool, outlined below to execute any code. Please add new commands, options, etc
 into the cli.rb file in order to make this as reusable as possible.
+
+```ruby
+ruby cli.rb
+```
 
 If you require additional Ruby gems, please add them to the Gemfile and install
 with bundle install versus running "gem install blah" manually.
@@ -51,42 +55,52 @@ Create data generates the number of documents specified.
 
 Examples:
 
-Create 100 documents:
+Create 100 documents and print to console:
 ```ruby
-ruby cli.rb gen 5
+ruby cli.rb gen transactions nested_manifest.json 100
 ```
 
 To generate documents and put them on the cluster: [--cluster] or [-c]
 Example:
-Create 5 documents and put them on the cluster:
+
+Create 100 documents and put them on the cluster:
 ```ruby
-ruby cli.rb gen 5 -c
+ruby cli.rb gen transactions nested_manifest.json 100 -c
 ```
-To generate documents on your local node: [--local] or [-l]
-Create 5 documents on localhost:
+To generate 100 documents on your local node: [--local] or [-l]
 ```ruby
-ruby cli.rb gen -l 5
+ruby cli.rb gen transactions nested_manifest.json 100 -l
 ```
 
-Profiling Queries
+Profiling Searces/Queries
 ----------------------------------------------------------------------------
 
-####To run a search query (on the cluster add "-c"):
-
+To run a search query on the cluster:
 ```ruby
 ruby cli.rb search <index> <query_file> -c
+
+# example:
+ruby cli.rb search transactions flat_queries.json -c
 ```
 
-####Indices:
+#### Indices:
 
 There are two indices to choose from:
 
-1) Transactions
+A) Transactions
     For this index, our documents contain nested maps of values.
 
-2) Flat Transactions
+B) Flat Transactions
     For this index, our documents contain the same level, except each value
     is at the root of the document.
+
+#### Queries:
+
+There are five different queries to execute. You can execute a specific one on
+the cluster by running:
+```ruby
+ruby cli.rb search transactions nested_queries.json -c -q <query_index>
+```
 
 0) Query through the database and returns matches where 'fees' are both greater then or equal to 1000,
 and less then 5000. Groups by country and orders by alphabetically.
