@@ -18,8 +18,7 @@ class CLI < Thor
     END
     desc "gen <manifest_file> <num_docs>", "Generates <num_docs> from a JSON manifest"
     option :cluster, :type => :boolean, :aliases => :c, :desc => "Perform actions against the remote cluster"
-    option :local, :type => :boolean, :aliases => :n, :desc => "Used to load data to the local cluster"
-    option :threads, :type => :numeric, :aliases => :t, :desc => "Number of threads to use, defaults to one"
+    option :local, :type => :boolean, :aliases => :l, :desc => "Used to load data to the local cluster"
     def gen(manifest, num_docs)
         # Convert number of documents to generate to an interger 
         num_docs = num_docs.to_i
