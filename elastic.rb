@@ -48,17 +48,14 @@ class Elastic
     # Performs a benchmarked search/query in ES
     def search(index, queries)
 
-        # formatted array of queries
-        competitors = Array.new(queries.length)
-
         $i = 0;
         while $i < queries.length do
-            competitors[$i] = { name: "query #{$i}", requests: queries[$i] }
-        end
 
-        pp connect().benchmark index: index, body: {
-            name: "query_benchmark",
-            competitors: competitors
-        }
+            # perform query
+            data = connect().search index: index, body: queries[$i]
+
+            puts query: $i, result: data
+            $i = $i + 1
+        end
     end
 end

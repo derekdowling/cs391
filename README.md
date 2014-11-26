@@ -70,11 +70,23 @@ ruby cli.rb gen -l 5
 
 Profiling Queries
 ----------------------------------------------------------------------------
-To profile a query:
+
+####To run a search query (on the cluster add "-c"):
 
 ```ruby
-ruby cli.rb search <flat_transactions/transactions> <query_file> (optional -q
-#_of_query_below)
+ruby cli.rb search <index> <query_file> -c
+```
+
+####Indices:
+
+There are two indices to choose from:
+
+1) Transactions
+    For this index, our documents contain nested maps of values.
+
+2) Flat Transactions
+    For this index, our documents contain the same level, except each value
+    is at the root of the document.
 
 0) Query through the database and returns matches where 'fees' are both greater then or equal to 1000,
 and less then 5000. Groups by country and orders by alphabetically.

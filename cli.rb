@@ -63,7 +63,7 @@ class CLI < Thor
         queries = JSON.parse(file)["queries"]
 
         if options[:query]
-            queries = queries[options[:query]]
+            queries = [queries[options[:query]]]
         end
 
         elastic.search(index, queries)
