@@ -28,8 +28,6 @@ class Elastic
 
     def testConnection(stats = false, config = false)
         pp connect().cluster.health
-        # pp connect().cluster.state
-        # pp connect().cluster.get_settings
 
         if stats
             pp connect().indices.stats
@@ -46,16 +44,36 @@ class Elastic
     end
 
     # Performs a benchmarked search/query in ES
-    def search(index, queries)
+    def search(index, queries, runs)
 
-        $i = 0;
-        while $i < queries.length do
+        $q = 0;
+        while $q < queries.length do
 
-            # perform query
-            data = connect().search index: index, body: queries[$i]
+            result = { :query =>  $q, :runs => runs }
+            time = 0
+            data = {}
 
-            puts query: $i, result: data
-            $i = $i + 1
+            $r = 0
+            while $r < runs do
+
+                # clear cache so our results don't suck
+                connect().indices.clear_cache index: index
+
+                # let ES recover
+                sleep 0.5
+
+                # perform query
+                data = connect().search index: index, body: queries[$q]
+
+                time = time + data["took"].to_f
+                $r = $r + 1
+            end
+
+            result["avg"] = time / runs
+            result["example"] = data
+
+            pp result
+            $q = $q + 1
         end
     end
 end

@@ -48,12 +48,14 @@ class CLI < Thor
         Cluster query example:
             search flat_transactions flat_queries.json -c -q 1
     END
-    desc "search <index> <rel_json_file>", "Find data in elastic search"
+    desc "search <index> <rel_json_file>", "Profile a query on Elastic Search, clears cache each time"
     option :cluster, :type => :boolean, :aliases => :c, :desc => "Perform query against the cluster"
     option :query, :type => :numeric, :aliases => :q, :desc => "Specify a specific index from the list of queries to execute"
+    option :runs, :type => :numeric, :aliases => :r, :desc => "How many times to run each query"
     def search(index, json_file)
 
         queries = {}
+        runs = 1
         elastic = Elastic.new
         if options[:cluster]
             elastic.useCluster()
@@ -66,7 +68,11 @@ class CLI < Thor
             queries = [queries[options[:query]]]
         end
 
-        elastic.search(index, queries)
+        if options[:runs]
+            runs = options[:runs]
+        end
+
+        elastic.search(index, queries, runs)
     end
 
     desc "ping", "Tests our elastic search connection and optional returns stats and configurations"

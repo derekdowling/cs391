@@ -72,10 +72,11 @@
                     }
                 }
             },
-                        "aggs" : {
-                            "max_input" : {
-                                "max" : { "field" : "input_amount" }}
-                            }
+            "aggs" : {
+                "max_input" : {
+                    "max" : { "field" : "input_amount" }
+                }
+            }
         },
         {
             "size" : 0,
