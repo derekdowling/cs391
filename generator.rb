@@ -39,14 +39,14 @@ class Generator
     end
 
     # Call this function to generate random data. By default 1 document will be generated.
-    def generate(manifest, documents = 1)
+    def generate(index, manifest, documents = 1)
         puts "Starting data generation"
 
         # load manifest from file
         parseManifest(manifest)
 
         # start generating json objects
-        createData(@driver, documents)
+        createData(index, documents)
     end
 
     # Parses the JSON manifest and stores it locally
@@ -58,7 +58,7 @@ class Generator
     end
 
     # Create objects until count is reached
-    def createData(buffer, total_docs)
+    def createData(index, total_docs)
 
         puts "Starting generation for: #{@uuid}"
 
@@ -89,7 +89,7 @@ class Generator
 
                 # Add an element to the array specifying we want to index, then add
                 # the object to index.
-                obj[bulk_count] = {index: { _index: :flat_transactions, _type: :item}}
+                obj[bulk_count] = {index: { _index: index, _type: :item}}
                 obj[bulk_count + 1] = {data: data_hash}
 
                 # increment our counters
@@ -101,7 +101,11 @@ class Generator
                 # upload all the documents we generated in bulk
                 if @driver.is_a?(Elastic)
                     @driver.bulk_load(obj)
+                elsif
+                    puts obj
                 end
+
+            # Catches both Ruby and Elasticsearch errors
             rescue StandardError => error
                 puts error
                 doc_count = doc_count - @bulk_doc_slug

@@ -16,10 +16,10 @@ class CLI < Thor
         Loads data in bulk to elastic search, 2500 documents at a time. By default it
         uploads data to your vagrant elastic search at 10.1.3.8:9200.
     END
-    desc "gen <manifest_file> <num_docs>", "Generates <num_docs> from a JSON manifest"
+    desc "gen <index> <manifest_file> <num_docs>", "Generates <num_docs> from a JSON manifest"
     option :cluster, :type => :boolean, :aliases => :c, :desc => "Perform actions against the remote cluster"
     option :local, :type => :boolean, :aliases => :l, :desc => "Used to load data to the local cluster"
-    def gen(manifest, num_docs)
+    def gen(index, manifest, num_docs)
         # Convert number of documents to generate to an interger 
         num_docs = num_docs.to_i
         generator = Generator.new
@@ -37,7 +37,7 @@ class CLI < Thor
             generator.setDriver(elastic)
         end
 
-        generator.generate(manifest, num_docs)
+        generator.generate(index, manifest, num_docs)
 
         puts "Done"
     end
