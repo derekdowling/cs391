@@ -9,7 +9,7 @@
 // number 123, 456, 789, or 000.
 
 {
-    [
+    "queries": [
         {
             "size" : 0,
             "query": {
@@ -24,17 +24,16 @@
                     }
                 }
             },
-                        "aggs" : {
-                            "group_by_country" : {
-                                "terms" : {
-                                    "field" : "country",
-                                    "order" : { "_term" : "asc" },
-                                    "size" : 0
-                                }
-                            }
-                        }
+            "aggs" : {
+                "group_by_country" : {
+                    "terms" : {
+                        "field" : "country",
+                        "order" : { "_term" : "asc" },
+                        "size" : 0
+                    }
+                }
+            }
         },
-
         {
             "size": 0,
             "query": {
@@ -59,8 +58,6 @@
                 }
             }
         },
-
-
         {
             "size" : 0,
             "query" : {
@@ -80,8 +77,6 @@
                                 "max" : { "field" : "input_amount" }}
                             }
         },
-
-
         {
             "size" : 0,
             "query" : {
@@ -112,29 +107,27 @@
                 }
             }
         },
-
-
-    {
-        "size": 0,
-        "query": {
-            "bool": {
-                "must": [
-                    {"match": { "credit_card_type": "Visa"}},
-                    {"match": { "dest_country": "USA"}},
-                    {"match": { "dest_city": "New York" }},
-                    {"range": { "input_amount": { "lt": 20000}}},
-                    {"match": { "source_country": "FR"}},
-                    {"match": { "source_city": "Paris"}},
-                    {"match": { "business_name": "Sears"}}
-                ],
-                "must_not": [
-                    {"match": { "branch_num": "123"}},
-                    {"match": { "branch_num": "456"}},
-                    {"match": { "branch_num": "789"}},
-                    {"match": { "branch_num": "000"}}
-                ]
+        {
+            "size": 0,
+            "query": {
+                "bool": {
+                    "must": [
+                        {"match": { "credit_card_type": "Visa"}},
+                        {"match": { "dest_country": "USA"}},
+                        {"match": { "dest_city": "New York" }},
+                        {"range": { "input_amount": { "lt": 20000}}},
+                        {"match": { "source_country": "FR"}},
+                        {"match": { "source_city": "Paris"}},
+                        {"match": { "business_name": "Sears"}}
+                    ],
+                    "must_not": [
+                        {"match": { "branch_num": "123"}},
+                        {"match": { "branch_num": "456"}},
+                        {"match": { "branch_num": "789"}},
+                        {"match": { "branch_num": "000"}}
+                    ]
+                }
             }
         }
-    }
     ]
 }

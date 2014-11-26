@@ -40,6 +40,7 @@ Running the CLI
 ----------------------------------------------------------------------------
 We've written all our our toolage into an easy to use CLI. You can see the available commands
 and options by:
+
 ```ruby
 ruby cli.rb
 ```
@@ -47,29 +48,40 @@ ruby cli.rb
 Using the create data script.
 -----------------------------------------------------------------------------
 Create data generates the number of documents specified.
+
 Examples:
-Create 5 documents:
+
+Create 100 documents:
 ```ruby
 ruby cli.rb gen 5
 ```
 
-To generate documents and put them on the cluster: [-cluster] or [-c]
+To generate documents and put them on the cluster: [--cluster] or [-c]
 Example:
 Create 5 documents and put them on the cluster:
 ```ruby
-ruby cli.rb gen -c  5
+ruby cli.rb gen 5 -c
 ```
-To generate documents and put them on your local cluster: [-hardcore] or [-h]
+To generate documents on your local node: [--local] or [-l]
 Create 5 documents on localhost:
 ```ruby
-ruby cli.rb gen -h 5
+ruby cli.rb gen -l 5
 ```
 
 Profiling Queries
 ----------------------------------------------------------------------------
-COMING SOON.
+To profile a query:
 
+```ruby
+ruby cli.rb search <flat_transactions/transactions> <query_file> (optional -q
+#_of_query_below)
 
-
-After:
-refresh parameter can be set to true
+0) Query through the database and returns matches where 'fees' are both greater then or equal to 1000,
+and less then 5000. Groups by country and orders by alphabetically.
+1) Find all *unique* source accounts located in the USA and order by account type in ascending order.
+2) For all transactions numbered between 500 and 10000, find the largest input amount
+3) Find all transactions using a priority code less or equal to 10, group by priority code, and take the average
+ input amount
+4) Find all transactions coming out of Paris, FR and going to New York, USA that have an input amount of less
+than $20,000, are from a Visa, and from the business Sears. Do not display results from the branch
+number 123, 456, 789, or 000.

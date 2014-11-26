@@ -8,29 +8,29 @@ require "json"
 require_relative "generator"
 require_relative "elastic"
 
-# This is a CLI tool that handles the generation and loading of data for our elastic search profiler.
+# This is a CLI tool that handles the generation and loading of data for our elastic
+# search profiler.
 class CLI < Thor
 
-    desc "gen <num_docs>", "Generates <num_docs> from a JSON manifest"
-    option :dev, :type => :boolean, :aliases => :d, :desc => "Connects to your local Dev ES Instance"
-    option :manifest, :type => :string, :desc => "NOT YET IMPLEMENTED, allows you to specify a specific manifest"
-    option :cluster, :type => :boolean, :aliases => :c, :desc => "Perform actions against the cluster if we are using the Elastic driver"
-    option :benchmark, :type => :boolean, :aliases => :b, :desc => "Benchmarks query while performing it"
-    option :hardcore, :type => :boolean, :aliases => :h, :desc => "Used when loading to the cluster locally"
+    long_desc <<-END
+        Loads data in bulk to elastic search, 2500 documents at a time. By default it
+        uploads data to your vagrant elastic search at 10.1.3.8:9200.
+    END
+    desc "gen <manifest_file> <num_docs>", "Generates <num_docs> from a JSON manifest"
+    option :cluster, :type => :boolean, :aliases => :c, :desc => "Perform actions against the remote cluster"
+    option :local, :type => :boolean, :aliases => :n, :desc => "Used to load data to the local cluster"
     option :threads, :type => :numeric, :aliases => :t, :desc => "Number of threads to use, defaults to one"
-    def gen(num_docs)
+    def gen(manifest, num_docs)
         # Convert number of documents to generate to an interger 
         num_docs = num_docs.to_i
         generator = Generator.new
-        # thread_count = 1
-        # threads = []
 
         # Generate n documents, and loads them into elastic search. 
-        if options[:driver] || options[:cluster] || options[:hardcore]
+        if options[:cluster] || options[:local]
             puts "Loading results into ES"
             elastic = Elastic.new
 
-            if options[:hardcore]
+            if options[:local]
                 elastic.useLocalCluster()
             elsif options[:cluster]
                 elastic.useCluster()
@@ -38,25 +38,7 @@ class CLI < Thor
             generator.setDriver(elastic)
         end
 
-        # if options[:threads]
-            # thread_count = options[:threads]
-        # end
-
-        generator.generate(num_docs)
-
-        # thread_count.times {
-            # # spawn threads
-            # threads << Thread.new {
-                # puts "startin"
-                # # generate and output
-                # generator.generate(num_docs)
-            # }
-        # }
-
-        # # collect threads
-        # threads.each { |thr|
-            # thr.join
-        # }
+        generator.generate(manifest, num_docs)
 
         puts "Done"
     end
@@ -80,14 +62,14 @@ class CLI < Thor
         file = File.read(json_file)
         queries = JSON.parse(file)["queries"]
 
-        if options[:queries]
-            queries = queries[options[:queries]]
+        if options[:query]
+            queries = queries[options[:query]]
         end
 
         elastic.search(index, queries)
     end
 
-    desc "ping", "Tests our elastic search connection"
+    desc "ping", "Tests our elastic search connection and optional returns stats and configurations"
     option :stats, :type => :boolean, :aliases => :s, :desc => "Also indice stats"
     option :config, :type => :boolean, :aliases => :c, :desc => "Include indice config"
     def ping()
@@ -96,38 +78,6 @@ class CLI < Thor
         elastic.useCluster()
 
         elastic.testConnection(options[:stats],options[:config])
-    end
-
-    desc "mode", "Changes various cluster settings"
-    option :bulk, :type => :boolean, :aliases => :b, :desc => "Optimizes settings for bulk loading"
-    option :search, :type => :boolean, :aliases => :s, :desc => "Turns the cluster to search mode" 
-    def mode()
-        if options[:bulk]
-            elastic.mode(true)
-        end
-        if options[:search]
-            elastic.mode(false)
-        end
-    end
-
-    ########################
-    # Helper Functions Below
-    ########################
-
-    # this makes thor not complain about these helpers
-    no_commands do 
-        # stops profiling metrics and prints to STDOUT
-        # context allows you to pass in some arbitrary statistics to output, we
-        # may want to look into a profiling gem that can probably do this way better
-        # out of the box
-        def stop_and_stat(start_time, context)
-            # stop metrics and calculate
-            end_time = Time.now
-            elapsed = (end_time - start_time)
-            puts "Finished at #{start_time}"
-            puts "Took #{elapsed} seconds to #{context}"
-        end
-    # end of no_commands
     end
 end
 

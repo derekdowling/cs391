@@ -4,23 +4,33 @@ require 'ruby-prof'
 require 'date'
 require 'time'
 
+# This class is responsible for creating sudo random data that can be generated
+# into elastic search
 class Generator
 
-    # Set which driver to use during random data generation and specifies lists of values that random data can be chosen from 
+    # Initialize some of the defaults we need here
     def initialize()
-        @driver = IO.new(STDOUT.fileno)
+        # prepare our RNG
+        @rand = Random.new(Random.new_seed)
+        # generate a uid for the generator, makes log parsing easier
+        @uuid = @rand.rand(10000)
+        # place holder for our manifest data
         @manifest = {}
+        # Various fields for the generator
         @name = [ "Jane" , "Bob", "Tim", "Joanne", "Lucy", "Jessica", "Tony", "Jason", "Rex", "Jas", "Alex" ]
         @country = [ "CA", "USA", "MEX", "UK", "FR", "GER", "DL", "GRC", "ESP" ]
         @email = [ "123@gmail.com", "sweetdood@yahoo.com", "edm@msn.ca", "llcoolj@gmail.com", "wasabi@gov.ab.ca" ]
         @business = [ "SuperHoldings LTD", "Walmart", "Superstore", "Italian Centre", "Best Buy", "Future Shop", "Sears", "Zellers" ]
         @city = [ "Edmonton", "London", "Paris", "Munich", "Athens", "Barcelona", "Mexico City", "New York", "Calgary", "Austin" ]
         @ip = [ "123.673.683.23", "123.379.231.547", "234.732.134.564", "234.437.243.12", "123.675.234.785", "234.547.321.673", "235.458.234.83" ]
-        @rand = Random.new(Random.new_seed)
         @cc = [ "Visa", "Mastercard", "American Express", "Maestro", "Discovery", "Diner's Club" ]
         @job = [ "CEO", "CFO", "CIO", "CTO", "Department Manager", "Employee", "Intern", "VP", "Board Member" ]
-        @uuid = @rand.rand(10000)
+        # default number of docs to load = 2000, index data + doc data for each
         @bulk_doc_slug = 4000
+        # average doc size in bytes
+        @doc_size = 3000
+        # Ratio: Gigs/Hour
+        @dgh = @doc_size * 3600.0 / 1000000000.0
     end
 
     # Set a specific driver to use
@@ -29,27 +39,22 @@ class Generator
     end
 
     # Call this function to generate random data. By default 1 document will be generated.
-    def generate(documents = 1)
+    def generate(manifest, documents = 1)
         puts "Starting data generation"
 
         # load manifest from file
-        parseManifest()
+        parseManifest(manifest)
 
         # start generating json objects
         createData(@driver, documents)
     end
 
-    # Loads the manifest file, parses it to Json, returns the hash
-    def parseManifest()
+    # Parses the JSON manifest and stores it locally
+    def parseManifest(manifest)
         puts "Parsing manifest file"
 
-        file = File.read('flattened_manifest.json')
+        file = File.read(manifest)
         @manifest = JSON.parse(file)
-    end
-
-    # Create a deep copy of the hash 
-    def copyHash(hash)
-        return Marshal.load(Marshal.dump(hash))
     end
 
     # Create objects until count is reached
@@ -61,12 +66,6 @@ class Generator
         if @bulk_doc_slug > total_docs
             @bulk_doc_slug = total_docs
         end
-
-        # average size of our output files
-        doc_size = 3000.0
-
-        # Ratio: Gigs/Hour
-        dgh = doc_size * 3600.0 / 1000000000.0
 
         # tuning variables
         start_time = Time.now
@@ -116,9 +115,9 @@ class Generator
                 exec_time = end_time - start_time
                 avg_time = exec_time.to_f / rounds
                 exec_ratio = doc_count / exec_time
-                gph = exec_ratio * dgh
+                gph = exec_ratio * @dgh
 
-                puts "#{@uuid}: T-#{avg_time} R-#{exec_ratio} GB/h-#{gph}"
+                puts "#{@uuid}: T-#{avg_time} D/S-#{exec_ratio} GB/h-#{gph}"
             end
 
         end

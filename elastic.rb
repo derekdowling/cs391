@@ -1,6 +1,8 @@
 require "elasticsearch"
 require "pp"
 
+# Our elastic search driver class. Handles various things such as connecting,
+# pinging, loading, and searching.
 # docs: http://www.rubydoc.info/gems/elasticsearch-api/
 class Elastic
 
@@ -58,17 +60,5 @@ class Elastic
             name: "query_benchmark",
             competitors: competitors
         }
-    end
-
-    def mode(bulk)
-        if bulk
-            client().cluster.put_settings body: { 
-                transient: { 'cluster.routing.allocation.disable_allocation' => true } 
-            }
-        else
-            client().cluster.put_settings body: { 
-                transient: { 'cluster.routing.allocation.disable_allocation' => true } 
-            }
-        end
     end
 end
