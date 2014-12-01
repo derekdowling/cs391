@@ -63,7 +63,7 @@ class Elastic
                 sleep 0.5
 
                 query = queries[$q]
-                query[:timeout] = 20000000
+                query[:timeout] = "2d"
 
                 # perform query
                 data = connect().search index: index, body: query
