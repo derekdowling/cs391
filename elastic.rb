@@ -21,7 +21,9 @@ class Elastic
 
     def connect()
         if @client.nil?
-            @client = Elasticsearch::Client.new host: @target
+            @client = Elasticsearch::Client.new host: @target, transport_options: {
+                request: { timeout: 1000000 }
+            }
         end
         return @client
     end
