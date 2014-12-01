@@ -62,8 +62,11 @@ class Elastic
                 # let ES recover
                 sleep 0.5
 
+                query = queries[$q]
+                query[:timeout] = 20000000
+
                 # perform query
-                data = connect().search index: index, body: queries[$q]
+                data = connect().search index: index, body: query
 
                 time = time + data["took"].to_f
                 $r = $r + 1
